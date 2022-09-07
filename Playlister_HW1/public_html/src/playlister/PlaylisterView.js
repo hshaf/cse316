@@ -18,6 +18,7 @@ export default class PlaylisterView {
     init() {
         // @todo - ONCE YOU IMPLEMENT THE FOOLPROOF DESIGN STUFF YOU SHOULD PROBABLY
         // START THESE BUTTONS OFF AS DISABLED
+        this.enableButton('add-button');
         this.enableButton('undo-button');
         this.enableButton('redo-button');
         this.enableButton('close-button');
@@ -119,6 +120,14 @@ export default class PlaylisterView {
             itemText.appendChild(document.createTextNode(song.title + " by " + song.artist));
             itemDiv.appendChild(document.createTextNode((i + 1) + ". "));
             itemDiv.appendChild(itemText);
+
+            // Add delete song button to the card
+            let deleteSongButton = document.createElement("input");
+            deleteSongButton.setAttribute("type", "button");
+            deleteSongButton.setAttribute("id", "delete-song-" + (i + 1));
+            deleteSongButton.setAttribute("class", "list-card-button");
+            deleteSongButton.setAttribute("value", "X");
+            itemDiv.appendChild(deleteSongButton);
 
             // AND PUT THE CARD INTO THE UI
             itemsDiv.appendChild(itemDiv);

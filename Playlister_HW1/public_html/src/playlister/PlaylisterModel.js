@@ -76,6 +76,22 @@ export default class PlaylisterModel {
         return this.currentList.songs[index];
     }
 
+    getEditSongId() {
+        return this.editSongId;
+    }
+
+    setEditSongId(id) {
+        this.editSongId = id;
+    }
+
+    getDeleteSongId() {
+        return this.deleteSongId;
+    }
+
+    setDeleteSongId(id) {
+        this.deleteSongId = id;
+    }
+
     getDeleteListId() {
         return this.deleteListId;
     }
@@ -230,6 +246,50 @@ export default class PlaylisterModel {
             this.view.highlightList(this.currentList.id);
         }
         this.saveLists();
+    }
+
+    // Function for adding a song to a playlist
+    addSong() {
+        if (!this.hasCurrentList()) {
+            return false;
+        }
+
+        let song = {
+            "title": "Untitled",
+            "artist": "Unknown",
+            "youTubeId": "dQw4w9WgXcQ"
+        };
+        this.currentList.songs.push(song);
+        this.saveLists();
+        this.view.refreshPlaylist(this.currentList);
+        return true;
+    }
+
+    // Function for editing a song in a playlist
+    editSong(songId, title, artist, youTubeId) {
+        if (!this.hasCurrentList()) {
+            return false;
+        }
+
+        let song = this.getSong(songId);
+        song.title = title;
+        song.artist = artist;
+        song.youTubeId = youTubeId;
+
+        this.saveLists();
+        this.view.refreshPlaylist(this.currentList);
+        return true;
+    }
+
+    deleteSong(songId) {
+        if (!this.hasCurrentList()) {
+            return false;
+        }
+
+        this.currentList.songs.splice(songId, 1);
+        this.saveLists();
+        this.view.refreshPlaylist(this.currentList);
+        return true;
     }
 
     // NEXT WE HAVE THE FUNCTIONS THAT ACTUALLY UPDATE THE LOADED LIST
