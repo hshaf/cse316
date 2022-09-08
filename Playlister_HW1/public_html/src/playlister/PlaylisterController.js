@@ -53,7 +53,7 @@ export default class PlaylisterController {
         }
         // HANDLER FOR ADD BUTTON
         document.getElementById("add-button").onmousedown = (event) => {
-            this.model.addSong();
+            this.model.addAddSongTransaction();
         }
 
         // HANDLER FOR UNDO BUTTON
@@ -115,7 +115,9 @@ export default class PlaylisterController {
             let songTitle = document.getElementById("edit-song-title-text").value
             let songArtist = document.getElementById("edit-song-artist-text").value
             let songYoutubeId = document.getElementById("edit-song-youtube-id-text").value
-            this.model.editSong(songId, songTitle, songArtist, songYoutubeId);
+            
+            // Create transaction for song edit
+            this.model.addEditSongTransaction(songId, songTitle, songArtist, songYoutubeId);
 
             // ALLOW OTHER INTERACTIONS
             this.model.toggleConfirmDialogOpen();
@@ -142,7 +144,7 @@ export default class PlaylisterController {
             let deleteSongId = this.model.getDeleteSongId();
 
             // Delete the song from the playlist
-            this.model.deleteSong(deleteSongId);
+            this.model.addDeleteSongTransaction(deleteSongId);
 
             // ALLOW OTHER INTERACTIONS
             this.model.toggleConfirmDialogOpen();
@@ -298,6 +300,7 @@ export default class PlaylisterController {
                 }
             }
 
+            // Set up handler for editing songs
             card.ondblclick = (event) => {
                 let editSongModal = document.getElementById("edit-song-modal");
 
@@ -317,11 +320,14 @@ export default class PlaylisterController {
             // Set up handler for delete song button
             let deleteSongButton = document.getElementById("delete-song-" + (i + 1));
             deleteSongButton.onclick = (event) => {
+                // DON'T PROPOGATE THIS INTERACTION TO LOWER-LEVEL CONTROLS
+                this.ignoreParentClick(event);
+
                 // Record the song id of the song the user wants to delete
                 this.model.setDeleteSongId(i);
 
-                // VERIFY THAT THE USER REALLY WANTS TO DELETE THE PLAYLIST
-                // THE CODE BELOW OPENS UP THE LIST DELETE VERIFICATION DIALOG
+                // VERIFY THAT THE USER REALLY WANTS TO DELETE THIS SONG FROM THE PLAYLIST
+                // THE CODE BELOW OPENS UP THE DELETE SONG VERIFICATION DIALOG
                 let song = this.model.getSong(i)
                 let deleteSpan = document.getElementById("delete-song-span");
                 deleteSpan.innerHTML = "";

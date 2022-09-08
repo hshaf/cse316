@@ -1,6 +1,9 @@
 import jsTPS from "../common/jsTPS.js";
 import Playlist from "./Playlist.js";
 import MoveSong_Transaction from "./transactions/MoveSong_Transaction.js";
+import AddSong_Transaction from "./transactions/AddSong_Transaction.js";
+import EditSong_Transaction from "./transactions/EditSong_Transaction.js";
+import RemoveSong_Transaction from "./transactions/RemoveSong_Transaction.js";
 
 /**
  * PlaylisterModel.js
@@ -248,12 +251,20 @@ export default class PlaylisterModel {
         this.saveLists();
     }
 
+    // NEXT WE HAVE THE FUNCTIONS THAT ACTUALLY UPDATE THE LOADED LIST
+
+    moveSong(fromIndex, toIndex) {
+        if (this.hasCurrentList()) {
+            let tempArray = this.currentList.songs.filter((song, index) => index !== fromIndex);
+            tempArray.splice(toIndex, 0, this.currentList.getSongAt(fromIndex))
+            this.currentList.songs = tempArray;
+            this.view.refreshPlaylist(this.currentList);
+        }
+        this.saveLists();
+    }
+
     // Function for adding a song to a playlist
     addSong() {
-        if (!this.hasCurrentList()) {
-            return false;
-        }
-
         let song = {
             "title": "Untitled",
             "artist": "Unknown",
@@ -267,10 +278,6 @@ export default class PlaylisterModel {
 
     // Function for editing a song in a playlist
     editSong(songId, title, artist, youTubeId) {
-        if (!this.hasCurrentList()) {
-            return false;
-        }
-
         let song = this.getSong(songId);
         song.title = title;
         song.artist = artist;
@@ -281,6 +288,7 @@ export default class PlaylisterModel {
         return true;
     }
 
+    // Function for deleting a song in a playlist
     deleteSong(songId) {
         if (!this.hasCurrentList()) {
             return false;
@@ -292,16 +300,16 @@ export default class PlaylisterModel {
         return true;
     }
 
-    // NEXT WE HAVE THE FUNCTIONS THAT ACTUALLY UPDATE THE LOADED LIST
-
-    moveSong(fromIndex, toIndex) {
-        if (this.hasCurrentList()) {
-            let tempArray = this.currentList.songs.filter((song, index) => index !== fromIndex);
-            tempArray.splice(toIndex, 0, this.currentList.getSongAt(fromIndex))
-            this.currentList.songs = tempArray;
-            this.view.refreshPlaylist(this.currentList);
-        }
+    restoreSong(songId, title, artist, youTubeId) {
+        let song = {
+            "title": title,
+            "artist": artist,
+            "youTubeId": youTubeId
+        };
+        this.currentList.songs.splice(songId, 0, song);
         this.saveLists();
+        this.view.refreshPlaylist(this.currentList);
+        return true;
     }
 
     // SIMPLE UNDO/REDO FUNCTIONS, NOTE THESE USE TRANSACTIONS
@@ -325,6 +333,33 @@ export default class PlaylisterModel {
 
     addMoveSongTransaction(fromIndex, onIndex) {
         let transaction = new MoveSong_Transaction(this, fromIndex, onIndex);
+        this.tps.addTransaction(transaction);
+        this.view.updateToolbarButtons(this);
+    }
+
+    addAddSongTransaction() {
+        if (!this.hasCurrentList()) {
+            return;
+        }
+        let transaction = new AddSong_Transaction(this);
+        this.tps.addTransaction(transaction);
+        this.view.updateToolbarButtons(this);
+    }
+
+    addEditSongTransaction(songId, songTitle, songArtist, songYoutubeId) {
+        if (!this.hasCurrentList()) {
+            return;
+        }
+        let transaction = new EditSong_Transaction(this, songId, songTitle, songArtist, songYoutubeId);
+        this.tps.addTransaction(transaction);
+        this.view.updateToolbarButtons(this);
+    }
+
+    addDeleteSongTransaction(deleteSongId) {
+        if (!this.hasCurrentList()) {
+            return;
+        }
+        let transaction = new RemoveSong_Transaction(this, deleteSongId);
         this.tps.addTransaction(transaction);
         this.view.updateToolbarButtons(this);
     }
