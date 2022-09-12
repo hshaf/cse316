@@ -300,6 +300,7 @@ export default class PlaylisterModel {
         return true;
     }
 
+    // Function for restoring a song in a playlist
     restoreSong(songId, title, artist, youTubeId) {
         let song = {
             "title": title,

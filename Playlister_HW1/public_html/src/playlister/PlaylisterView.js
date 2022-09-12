@@ -216,11 +216,28 @@ export default class PlaylisterView {
         }
 
         else {
-            this.enableButton("add-list-button");
-            this.enableButton('add-button');
-            this.enableButton("undo-button");
-            this.enableButton("redo-button");
-            this.enableButton("close-button");
+            if (model.currentList === null) {
+                this.enableButton("add-list-button");
+                this.disableButton('add-button');
+                this.disableButton("close-button");
+            }
+            else {
+                this.disableButton("add-list-button");
+                this.enableButton('add-button');
+                this.enableButton("close-button");
+            }
+            if (tps.hasTransactionToRedo()) {
+                this.enableButton("redo-button");
+            }
+            else {
+                this.disableButton("redo-button");
+            }
+            if (tps.hasTransactionToUndo()) {
+                this.enableButton("undo-button");
+            }
+            else {
+                this.disableButton("undo-button");
+            }
         }
     }
 
