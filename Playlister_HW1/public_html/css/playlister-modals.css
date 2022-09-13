@@ -95,6 +95,24 @@ span {
   margin-top: 1rem;
 }
 
+.edit-song-flex-container {
+  display: flex;
+  flex-direction: row;
+  font-size:28pt;
+}
+
+.edit-song-flex-left {
+  width: 50%;
+  margin: 5px;
+  padding: 5px;
+}
+
+.edit-song-flex-right {
+  width: 50%;
+  margin: 5px;
+  padding: 5px;
+}
+
 /* ANIMATIONS
 –––––––––––––––––––––––––––––––––––––––––––––––––– */
 [data-animation] .modal-root {
