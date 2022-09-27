@@ -10,6 +10,7 @@ import MoveSong_Transaction from './transactions/MoveSong_Transaction.js';
 
 // THESE REACT COMPONENTS ARE MODALS
 import DeleteListModal from './components/DeleteListModal.js';
+import EditSongModal from './components/EditSongModal';
 
 // THESE REACT COMPONENTS ARE IN OUR UI
 import Banner from './components/Banner.js';
@@ -35,6 +36,7 @@ class App extends React.Component {
         // SETUP THE INITIAL STATE
         this.state = {
             listKeyPairMarkedForDeletion : null,
+            songIdMarkedForEditing: 0,
             currentList : null,
             sessionData : loadedSessionData
         }
@@ -235,6 +237,19 @@ class App extends React.Component {
         let transaction = new MoveSong_Transaction(this, start, end);
         this.tps.addTransaction(transaction);
     }
+    // This function edits a song in a playlist
+    editSong = (songId) => {
+        let song = this.state.currentList.songs[songId];
+        song.title = document.getElementById("edit-song-title-text").value;
+        song.artist = document.getElementById("edit-song-artist-text").value;
+        song.youTubeId = document.getElementById("edit-song-youtube-id-text").value;
+
+        this.setStateWithUpdatedList(this.state.currentList);
+    }
+    editMarkedSong = () => {
+        this.editSong(this.state.songIdMarkedForEditing);
+        this.hideEditSongModal();
+    }
     // THIS FUNCTION BEGINS THE PROCESS OF PERFORMING AN UNDO
     undo = () => {
         if (this.tps.hasTransactionToUndo()) {
@@ -274,6 +289,30 @@ class App extends React.Component {
         let modal = document.getElementById("delete-list-modal");
         modal.classList.remove("is-visible");
     }
+    markSongForEditing = (songId) => {
+        this.setState(prevState => ({
+            songIdMarkedForEditing: songId
+        }), () => {
+            // PROMPT THE USER
+            this.showEditSongModal();
+        });
+    }
+    // THIS FUNCTION SHOWS THE MODAL FOR PROMPTING THE USER
+    // TO EDIT A SONG IN A PLAYLIST
+    showEditSongModal() {
+        let modal = document.getElementById("edit-song-modal");
+        if (this.state.currentList) {
+            document.getElementById("edit-song-title-text").value = this.state.currentList.songs[this.state.songIdMarkedForEditing].title;
+            document.getElementById("edit-song-artist-text").value = this.state.currentList.songs[this.state.songIdMarkedForEditing].artist;
+            document.getElementById("edit-song-youtube-id-text").value = this.state.currentList.songs[this.state.songIdMarkedForEditing].youTubeId;
+        }
+        modal.classList.add("is-visible");
+    }
+    // THIS FUNCTION IS FOR HIDING THE MODAL
+    hideEditSongModal() {
+        let modal = document.getElementById("edit-song-modal");
+        modal.classList.remove("is-visible");
+    }
     render() {
         let canAddSong = this.state.currentList !== null;
         let canUndo = this.tps.hasTransactionToUndo();
@@ -303,13 +342,18 @@ class App extends React.Component {
                 />
                 <PlaylistCards
                     currentList={this.state.currentList}
-                    moveSongCallback={this.addMoveSongTransaction} />
+                    moveSongCallback={this.addMoveSongTransaction}
+                    editSongCallback={this.markSongForEditing} />
                 <Statusbar 
                     currentList={this.state.currentList} />
                 <DeleteListModal
                     listKeyPair={this.state.listKeyPairMarkedForDeletion}
                     hideDeleteListModalCallback={this.hideDeleteListModal}
                     deleteListCallback={this.deleteMarkedList}
+                />
+                <EditSongModal
+                    hideEditSongModalCallback={this.hideEditSongModal}
+                    editSongCallback={this.editMarkedSong}
                 />
             </div>
         );
