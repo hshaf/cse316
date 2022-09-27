@@ -252,6 +252,21 @@ class App extends React.Component {
         this.editSong(this.state.songIdMarkedForEditing);
         this.hideEditSongModal();
     }
+    // This function adds a song to a playlist
+    addSong = () => {
+        if (!this.state.currentList) {
+            console.log('no current list opened, cannot add song');
+            return;
+        }
+
+        let song = {
+            "title": "Untitled",
+            "artist": "Unknown",
+            "youTubeId": "dQw4w9WgXcQ"
+        };
+        this.state.currentList.songs.push(song);
+        this.setStateWithUpdatedList(this.state.currentList);
+    }
     // This function deletes a song in a playlist
     deleteSong = (songId) => {
         this.state.currentList.songs.splice(songId, 1);
@@ -369,6 +384,7 @@ class App extends React.Component {
                     undoCallback={this.undo}
                     redoCallback={this.redo}
                     closeCallback={this.closeCurrentList}
+                    addSongCallback={this.addSong}
                 />
                 <PlaylistCards
                     currentList={this.state.currentList}
