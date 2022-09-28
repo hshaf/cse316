@@ -7,6 +7,9 @@ import jsTPS from './common/jsTPS.js';
 
 // OUR TRANSACTIONS
 import MoveSong_Transaction from './transactions/MoveSong_Transaction.js';
+import EditSong_Transaction from './transactions/EditSong_Transaction';
+import DeleteSong_Transaction from './transactions/DeleteSong_Transaction';
+import AddSong_Transaction from './transactions/AddSong_Transaction';
 
 // THESE REACT COMPONENTS ARE MODALS
 import DeleteListModal from './components/DeleteListModal.js';
@@ -263,17 +266,39 @@ class App extends React.Component {
         let transaction = new MoveSong_Transaction(this, start, end);
         this.tps.addTransaction(transaction);
     }
+    // THIS FUNCTION ADDS A EditSong_Transaction TO THE TRANSACTION STACK
+    addEditSongTransaction = (songId, songTitle, songArtist, songYoutubeId) => {
+        let transaction = new EditSong_Transaction(this, songId, songTitle, songArtist, songYoutubeId);
+        this.tps.addTransaction(transaction);
+    }
+    // THIS FUNCTION ADDS A DeleteSong_Transaction TO THE TRANSACTION STACK
+    addDeleteSongTransaction = (songId) => {
+        let transaction = new DeleteSong_Transaction(this, songId);
+        this.tps.addTransaction(transaction);
+    }
+    // THIS FUNCTION ADDS A AddSong_Transaction TO THE TRANSACTION STACK
+    addAddSongTransaction = (songId) => {
+        if (!this.state.currentList) {
+            return;
+        }
+        let transaction = new AddSong_Transaction(this);
+        this.tps.addTransaction(transaction);
+    }
     // This function edits a song in a playlist
-    editSong = (songId) => {
+    editSong = (songId, songTitle, songArtist, songYoutubeId) => {
         let song = this.state.currentList.songs[songId];
-        song.title = document.getElementById("edit-song-title-text").value;
-        song.artist = document.getElementById("edit-song-artist-text").value;
-        song.youTubeId = document.getElementById("edit-song-youtube-id-text").value;
+        song.title = songTitle;
+        song.artist = songArtist;
+        song.youTubeId = songYoutubeId;
 
         this.setStateWithUpdatedList(this.state.currentList);
     }
     editMarkedSong = () => {
-        this.editSong(this.state.songIdMarkedForEditing);
+        let title = document.getElementById("edit-song-title-text").value;
+        let artist = document.getElementById("edit-song-artist-text").value;
+        let youTubeId = document.getElementById("edit-song-youtube-id-text").value;
+
+        this.addEditSongTransaction(this.state.songIdMarkedForEditing, title, artist, youTubeId);
         this.hideEditSongModal();
     }
     // This function adds a song to a playlist
@@ -291,13 +316,27 @@ class App extends React.Component {
         this.state.currentList.songs.push(song);
         this.setStateWithUpdatedList(this.state.currentList);
     }
+    restoreSong = (songId, songTitle, songArtist, songYoutubeId) => {
+        if (!this.state.currentList) {
+            console.log('no current list opened, cannot restore song');
+            return;
+        }
+
+        let song = {
+            "title": songTitle,
+            "artist": songArtist,
+            "youTubeId": songYoutubeId
+        };
+        this.state.currentList.songs.splice(songId, 0, song);
+        this.setStateWithUpdatedList(this.state.currentList);
+    }
     // This function deletes a song in a playlist
     deleteSong = (songId) => {
         this.state.currentList.songs.splice(songId, 1);
         this.setStateWithUpdatedList(this.state.currentList);
     }
     deleteMarkedSong = () => {
-        this.deleteSong(this.state.songIdMarkedForDeletion);
+        this.addDeleteSongTransaction(this.state.songIdMarkedForDeletion);
         this.hideDeleteSongModal();
     }
     // THIS FUNCTION BEGINS THE PROCESS OF PERFORMING AN UNDO
@@ -408,7 +447,7 @@ class App extends React.Component {
                     undoCallback={this.undo}
                     redoCallback={this.redo}
                     closeCallback={this.closeCurrentList}
-                    addSongCallback={this.addSong}
+                    addSongCallback={this.addAddSongTransaction}
                 />
                 <PlaylistCards
                     currentList={this.state.currentList}
