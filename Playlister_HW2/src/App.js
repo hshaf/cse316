@@ -42,6 +42,30 @@ class App extends React.Component {
             currentList : null,
             sessionData : loadedSessionData
         }
+
+        // Bind handleKeyDown function for pressing ctrl + z and ctrl + y
+        this.handleKeyDown = this.handleKeyDown.bind(this);
+    }
+    handleKeyDown(event){
+        if (event.ctrlKey) {
+            // ctrl + z to call undo
+            if (event.keyCode === 90) {
+                this.undo();
+                console.log('ctrl + z undo');
+            }
+
+            // ctrl + y to call redo
+            else if (event.keyCode === 89) {
+                this.redo();
+                console.log('ctrl + y redo');
+            }
+        }
+      }
+    componentDidMount(){
+        document.addEventListener("keydown", this.handleKeyDown, false);
+    }
+    componentWillUnmount(){
+        document.removeEventListener("keydown", this.handleKeyDown, false);
     }
     sortKeyNamePairsByName = (keyNamePairs) => {
         keyNamePairs.sort((keyPair1, keyPair2) => {
