@@ -42,6 +42,7 @@ class App extends React.Component {
             listKeyPairMarkedForDeletion : null,
             songIdMarkedForEditing: 0,
             songIdMarkedForDeletion: 0,
+            isModalOpen: false,
             currentList : null,
             sessionData : loadedSessionData
         }
@@ -213,6 +214,11 @@ class App extends React.Component {
     }
     // THIS FUNCTION BEGINS THE PROCESS OF CLOSING THE CURRENT LIST
     closeCurrentList = () => {
+        if (this.state.isModalOpen) {
+            console.log('a modal is currently open, cannot close list');
+            return;
+        }
+        this.tps.clearAllTransactions();
         this.setState(prevState => ({
             listKeyPairMarkedForDeletion : prevState.listKeyPairMarkedForDeletion,
             currentList: null,
@@ -220,7 +226,7 @@ class App extends React.Component {
         }), () => {
             // AN AFTER EFFECT IS THAT WE NEED TO MAKE SURE
             // THE TRANSACTION STACK IS CLEARED
-            this.tps.clearAllTransactions();
+            // this.tps.clearAllTransactions();
         });
     }
     setStateWithUpdatedList(list) {
@@ -277,8 +283,13 @@ class App extends React.Component {
         this.tps.addTransaction(transaction);
     }
     // THIS FUNCTION ADDS A AddSong_Transaction TO THE TRANSACTION STACK
-    addAddSongTransaction = (songId) => {
+    addAddSongTransaction = () => {
         if (!this.state.currentList) {
+            console.log('no playlist open, could not add song');
+            return;
+        }
+        if (this.state.isModalOpen) {
+            console.log('a modal is currently open, cannot add a song');
             return;
         }
         let transaction = new AddSong_Transaction(this);
@@ -341,27 +352,32 @@ class App extends React.Component {
     }
     // THIS FUNCTION BEGINS THE PROCESS OF PERFORMING AN UNDO
     undo = () => {
-        if (this.tps.hasTransactionToUndo()) {
+        if (this.tps.hasTransactionToUndo() && !this.state.isModalOpen) {
             this.tps.undoTransaction();
 
             // MAKE SURE THE LIST GETS PERMANENTLY UPDATED
             this.db.mutationUpdateList(this.state.currentList);
+
+            this.setState({});
         }
     }
     // THIS FUNCTION BEGINS THE PROCESS OF PERFORMING A REDO
     redo = () => {
-        if (this.tps.hasTransactionToRedo()) {
+        if (this.tps.hasTransactionToRedo() && !this.state.isModalOpen) {
             this.tps.doTransaction();
 
             // MAKE SURE THE LIST GETS PERMANENTLY UPDATED
             this.db.mutationUpdateList(this.state.currentList);
+
+            this.setState({});
         }
     }
     markListForDeletion = (keyPair) => {
         this.setState(prevState => ({
             currentList: prevState.currentList,
             listKeyPairMarkedForDeletion : keyPair,
-            sessionData: prevState.sessionData
+            sessionData: prevState.sessionData,
+            isModalOpen: true
         }), () => {
             // PROMPT THE USER
             this.showDeleteListModal();
@@ -374,13 +390,17 @@ class App extends React.Component {
         modal.classList.add("is-visible");
     }
     // THIS FUNCTION IS FOR HIDING THE MODAL
-    hideDeleteListModal() {
+    hideDeleteListModal = () => {
+        this.setState(prevState => ({
+            isModalOpen: false
+        }));
         let modal = document.getElementById("delete-list-modal");
         modal.classList.remove("is-visible");
     }
     markSongForEditing = (songId) => {
         this.setState(prevState => ({
-            songIdMarkedForEditing: songId
+            songIdMarkedForEditing: songId,
+            isModalOpen: true
         }), () => {
             // PROMPT THE USER
             this.showEditSongModal();
@@ -398,13 +418,17 @@ class App extends React.Component {
         modal.classList.add("is-visible");
     }
     // THIS FUNCTION IS FOR HIDING THE MODAL
-    hideEditSongModal() {
+    hideEditSongModal = () => {
+        this.setState(prevState => ({
+            isModalOpen: false
+        }));
         let modal = document.getElementById("edit-song-modal");
         modal.classList.remove("is-visible");
     }
     markSongForDeletion = (songId) => {
         this.setState(prevState => ({
-            songIdMarkedForDeletion: songId
+            songIdMarkedForDeletion: songId,
+            isModalOpen: true
         }), () => {
             // PROMPT THE USER
             this.showDeleteSongModal();
@@ -417,7 +441,10 @@ class App extends React.Component {
         modal.classList.add("is-visible");
     }
     // THIS FUNCTION IS FOR HIDING THE MODAL
-    hideDeleteSongModal() {
+    hideDeleteSongModal = () => {
+        this.setState(prevState => ({
+            isModalOpen: false
+        }));
         let modal = document.getElementById("delete-song-modal");
         modal.classList.remove("is-visible");
     }
@@ -431,6 +458,8 @@ class App extends React.Component {
                 <Banner />
                 <SidebarHeading
                     createNewListCallback={this.createNewList}
+                    currentList={this.state.currentList}
+                    isModalOpen={this.state.isModalOpen}
                 />
                 <SidebarList
                     currentList={this.state.currentList}
@@ -444,6 +473,7 @@ class App extends React.Component {
                     canUndo={canUndo}
                     canRedo={canRedo}
                     canClose={canClose} 
+                    isModalOpen={this.state.isModalOpen}
                     undoCallback={this.undo}
                     redoCallback={this.redo}
                     closeCallback={this.closeCurrentList}
