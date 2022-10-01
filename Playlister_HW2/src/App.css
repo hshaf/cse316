@@ -169,6 +169,13 @@ body {
   background-color: lightgray;
 }
 
+.song-card-selected {
+  background-color: black !important;
+  border: 2px black solid;
+  opacity: 0.5;
+  color: white;
+}
+
 .playlister-song, .playlister-song-dragged-to { 
   /* display:flex;
   align-items: center; */

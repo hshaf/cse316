@@ -6,14 +6,17 @@ export default class SongCard extends React.Component {
 
         this.state = {
             isDragging: false,
-            draggedTo: false
+            draggedTo: false,
+            isSelected: false
         }
     }
     handleDragStart = (event) => {
+        console.log('handle drag start');
         event.dataTransfer.setData("song", event.target.id);
         this.setState(prevState => ({
             isDragging: true,
-            draggedTo: prevState.draggedTo
+            draggedTo: prevState.draggedTo,
+            isSelected: true
         }));
     }
     handleDragOver = (event) => {
@@ -24,6 +27,7 @@ export default class SongCard extends React.Component {
         }));
     }
     handleDragEnter = (event) => {
+        console.log('handle drag enter');
         event.preventDefault();
         this.setState(prevState => ({
             isDragging: prevState.isDragging,
@@ -31,6 +35,7 @@ export default class SongCard extends React.Component {
         }));
     }
     handleDragLeave = (event) => {
+        console.log('handle drag leave');
         event.preventDefault();
         this.setState(prevState => ({
             isDragging: prevState.isDragging,
@@ -38,6 +43,7 @@ export default class SongCard extends React.Component {
         }));
     }
     handleDrop = (event) => {
+        console.log('drop reached');
         event.preventDefault();
         let target = event.target;
         let targetId = target.id;
@@ -47,11 +53,21 @@ export default class SongCard extends React.Component {
         
         this.setState(prevState => ({
             isDragging: false,
-            draggedTo: false
+            draggedTo: false,
+            isSelected: false
         }));
 
         // ASK THE MODEL TO MOVE THE DATA
         if (targetId) {this.props.moveCallback(sourceId, targetId);}
+    }
+    handleDragEnd = (event) => {
+        console.log('handle drag end');
+        event.preventDefault();
+        this.setState(prevState => ({
+            isDragging: false,
+            draggedTo: false,
+            isSelected: false
+        }));
     }
     handleClick = (event) => {
         if (event.detail === 2) {
@@ -80,6 +96,9 @@ export default class SongCard extends React.Component {
         if (this.state.draggedTo) {
             itemClass = "playlister-song-dragged-to";
         }
+        if (this.state.isSelected) {
+            itemClass += " song-card-selected";
+        }
         return (
             <div
                 id={'song-' + num}
@@ -89,6 +108,7 @@ export default class SongCard extends React.Component {
                 onDragEnter={this.handleDragEnter}
                 onDragLeave={this.handleDragLeave}
                 onDrop={this.handleDrop}
+                onDragEnd={this.handleDragEnd}
                 onClick={this.handleClick}
                 draggable="true"
             >
