@@ -117,6 +117,7 @@ body {
   margin: 10px;
   padding: 20px;
   border-radius: 25px;
+  height: 35px;
 }
 
 .list-card:aria-disabled,.list-card[aria-disabled] {
