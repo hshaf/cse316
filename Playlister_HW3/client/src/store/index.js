@@ -19,7 +19,8 @@ export const GlobalStoreActionType = {
     SET_CURRENT_LIST: "SET_CURRENT_LIST",
     SET_LIST_NAME_EDIT_ACTIVE: "SET_LIST_NAME_EDIT_ACTIVE",
     DELETE_LIST: "DELETE_LIST",
-    SELECT_DELETE_LIST: "SELECT_DELETE_LIST"
+    SELECT_DELETE_LIST: "SELECT_DELETE_LIST",
+    UPDATE_LIST: "UPDATE_LIST"
 }
 
 // WE'LL NEED THIS TO PROCESS TRANSACTIONS
@@ -120,6 +121,15 @@ export const useGlobalStore = () => {
                 return setStore({
                     idNamePairs: store.idNamePairs,
                     currentList: null,
+                    newListCounter: store.newListCounter,
+                    listNameActive: false
+                });
+            }
+            // Update current list
+            case GlobalStoreActionType.UPDATE_LIST: {
+                return setStore({
+                    idNamePairs: payload.idNamePairs,
+                    currentList: payload.playlist,
                     newListCounter: store.newListCounter,
                     listNameActive: false
                 });
@@ -238,6 +248,54 @@ export const useGlobalStore = () => {
             type: GlobalStoreActionType.CLOSE_CURRENT_LIST,
             payload: {}
         });
+    }
+
+    // This function adds a song to the current list
+    store.addSong = function () {
+        async function asyncAddSong() {
+            let playlist = store.currentList;
+            let song = {
+                "title": "Untitled",
+                "artist": "Unknown",
+                "youTubeId": "dQw4w9WgXcQ"
+            };
+
+            // Add new song to list
+            playlist.songs.push(song);
+        }
+        if (!store.currentList) {
+            console.log('no list currently open, could not add song');
+            return;
+        }
+        asyncAddSong();
+        store.updateList();
+    }
+
+    store.updateList = function() {
+        if (!store.currentList) {
+            console.log('no current list opened, could not update list');
+            return;
+        }
+        async function asyncUpdateList(playlist) {
+            let response = await api.updatePlaylistById(playlist._id, playlist);
+            if (response.data.success) {
+                async function getListPairs(playlist) {
+                    response = await api.getPlaylistPairs();
+                    if (response.data.success) {
+                        let pairsArray = response.data.idNamePairs;
+                        storeReducer({
+                            type: GlobalStoreActionType.UPDATE_LIST,
+                            payload: {
+                                idNamePairs: pairsArray,
+                                playlist: playlist
+                            }
+                        });
+                    }
+                }
+                getListPairs(playlist);
+            }
+        }
+        asyncUpdateList(store.currentList);
     }
 
     // THIS FUNCTION LOADS ALL THE ID, NAME PAIRS SO WE CAN LIST ALL THE LISTS
