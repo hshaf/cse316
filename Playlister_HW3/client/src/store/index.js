@@ -1,5 +1,6 @@
 import { createContext, useState } from 'react'
 import jsTPS from '../common/jsTPS'
+import MoveSong_Transaction from '../transactions/MoveSong_Transaction';
 import api from '../api'
 export const GlobalStoreContext = createContext({});
 /*
@@ -244,6 +245,7 @@ export const useGlobalStore = () => {
 
     // THIS FUNCTION PROCESSES CLOSING THE CURRENTLY LOADED LIST
     store.closeCurrentList = function () {
+        tps.clearAllTransactions();
         storeReducer({
             type: GlobalStoreActionType.CLOSE_CURRENT_LIST,
             payload: {}
@@ -271,6 +273,35 @@ export const useGlobalStore = () => {
         store.updateList();
     }
 
+    // THIS FUNCTION ADDS A MoveSong_Transaction TO THE TRANSACTION STACK
+    store.addMoveSongTransaction = function (start, end) {
+        let transaction = new MoveSong_Transaction(store, start, end);
+        tps.addTransaction(transaction);
+    }
+
+    // This function moves a song in a list
+    store.moveSong = function (start, end) {
+        let list = store.currentList;
+
+        // WE NEED TO UPDATE THE STATE FOR THE APP
+        if (start < end) {
+            let temp = list.songs[start];
+            for (let i = start; i < end;) {
+                list.songs[i] = list.songs[++i];
+            }
+            list.songs[end] = temp;
+        }
+        else if (start > end) {
+            let temp = list.songs[start];
+            for (let i = start; i > end;) {
+                list.songs[i] = list.songs[--i];
+            }
+            list.songs[end] = temp;
+        }
+        store.updateList();
+    }
+
+    // This function updates the current list
     store.updateList = function() {
         if (!store.currentList) {
             console.log('no current list opened, could not update list');
