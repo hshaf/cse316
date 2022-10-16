@@ -65,9 +65,11 @@ body {
 #playlist-selector, #playlist-cards {
   overflow: scroll;
   height: 500px;
-  grid-column: 1 / 3;
+  display: flex;
+  flex-direction: column;
+  /* grid-column: 1 / 3;
   grid-row: 2 / 3;
-  display:grid;
+  display:grid; */
   background-color: var(--swatch-primary);
 }
 
@@ -170,14 +172,12 @@ input {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 1rem;
   background: var(--black);
   color: var(--swatch-text);
   cursor: pointer;
   visibility: hidden;
   opacity: 0;
   transition: all 0.35s ease-in;
-  font-family: var(--font-primary);
 }
 
 .modal.is-visible {
@@ -185,107 +185,180 @@ input {
   opacity: 1;
 }
 
-.modal-dialog {
+.modal-root {
   position: relative;
-  max-width: 800px;
-  max-height: 80vh;
+  max-width: 1200vw;
+  max-height: 600vh;
+  overflow: visible;
+  display: flex;
+  flex-direction: column;
   background: var(--swatch-complement);
-  overflow: auto;
   cursor: default;
-  border-width: 5px;
-  border-radius: 10px;
-  border-style: groove;
+  border-width: 2px;
+  border-color: black;
+  border-style: solid;
+  box-shadow: 5px 10px #888888;
 }
 
-.modal-dialog > * {
+.modal-root > * {
   padding: 1rem;
 }
 
-.modal-header,
-.modal-footer {
-  background: var(--lightgray);
+.modal-north {
+  font-size:20pt;
+  font-weight: bold;
+  background-color: #669966;
+  color:white;
 }
 
-.modal-header {
+.modal-center {
+  display: grid;
+  grid-template-columns: 30% 65%;
+  grid-template-rows: 33% 33% 33%;
+  gap: 10px 20px;
+  font-size: 25pt;
+}
+
+#delete-list-span {
+  font-weight: bold;
+  font-style: italic;
+}
+
+.modal-south {
+  display:flex;
+  flex-direction: row;
+  background-color: lightgray;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-center-content {
+  grid-column: 1 / 3;
+  grid-row: 1 / 4;
+}
+
+.modal-prompt {  
+  font-size:28pt;
+  font-weight: bold;
+}
+
+.modal-textfield {
+  font-size:28pt;
+}
+
+.modal-button {
+  font-size: 20pt;
+}
+
+#title-prompt {
+  grid-column: 1 / 2;
+  grid-row: 1 / 2;
+}
+
+#edit-song-modal-title-textfield {
+  grid-column: 2 / 3;
+  grid-row: 1 / 2;
+}
+
+#artist-prompt {
+  grid-column: 1 / 2;
+  grid-row: 2 / 3;
+}
+
+#edit-song-modal-artist-textfield {
+  grid-column: 2 / 3;
+  grid-row: 2 / 3;
+}
+
+#you-tube-id-prompt {
+  grid-column: 1 / 2;
+  grid-row: 3 / 4;
+}
+
+#edit-song-modal-youTubeId-textfield {
+  grid-column: 2 / 3;
+  grid-row: 3 / 4;
+}
+
+.confirm-cancel-box {
+  grid-column: 1 / 3;
+  grid-row: 3 / 4;
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  border-bottom: dotted;
+  justify-content: center;
 }
 
-.modal-header,
-.modal-close {
-  font-size: 1.5rem;
+.modal-button {
+  margin:5px;
 }
 
 .modal p + p {
   margin-top: 1rem;
 }
 
-.modal-control {
-  cursor: pointer;
-  width: 20%;
+.edit-song-flex-container {
+  display: flex;
+  flex-direction: row;
+  font-size:28pt;
 }
 
-.dialog-header {
-  font-size: 24pt;
+.edit-song-flex-left {
+  margin: 5px;
+  padding: 5px;
 }
 
-#close-modal-button {
-  float:right;
-}
-
-#confirm-cancel-container {
-  text-align:center;
+.edit-song-flex-right {
+  margin: 5px;
+  padding: 5px;
 }
 
 /* ANIMATIONS
 –––––––––––––––––––––––––––––––––––––––––––––––––– */
-[data-animation] .modal-dialog {
+[data-animation] .modal-root {
   opacity: 0;
   transition: all 0.5s var(--bounceEasing);
 }
 
-[data-animation].is-visible .modal-dialog {
+[data-animation].is-visible .modal-root {
   opacity: 1;
   transition-delay: 0.2s;
 }
 
-[data-animation="slideInOutDown"] .modal-dialog {
+[data-animation="slideInOutDown"] .modal-root {
   transform: translateY(100%);
 }
 
-[data-animation="slideInOutTop"] .modal-dialog {
+[data-animation="slideInOutTop"] .modal-root {
   transform: translateY(-100%);
 }
 
-[data-animation="slideInOutLeft"] .modal-dialog {
+[data-animation="slideInOutLeft"] .modal-root {
   transform: translateX(-100%);
 }
 
-[data-animation="slideInOutRight"] .modal-dialog {
+[data-animation="slideInOutRight"] .modal-root {
   transform: translateX(100%);
 }
 
-[data-animation="zoomInOut"] .modal-dialog {
+[data-animation="zoomInOut"] .modal-root {
   transform: scale(0.2);
 }
 
-[data-animation="rotateInOutDown"] .modal-dialog {
+[data-animation="rotateInOutDown"] .modal-root {
   transform-origin: top left;
   transform: rotate(-1turn);
 }
 
-[data-animation="mixInAnimations"].is-visible .modal-dialog {
+[data-animation="mixInAnimations"].is-visible .modal-root {
   animation: mixInAnimations 2s 0.2s linear forwards;
 }
 
-[data-animation="slideInOutDown"].is-visible .modal-dialog,
-[data-animation="slideInOutTop"].is-visible .modal-dialog,
-[data-animation="slideInOutLeft"].is-visible .modal-dialog,
-[data-animation="slideInOutRight"].is-visible .modal-dialog,
-[data-animation="zoomInOut"].is-visible .modal-dialog,
-[data-animation="rotateInOutDown"].is-visible .modal-dialog {
+[data-animation="slideInOutDown"].is-visible .modal-root,
+[data-animation="slideInOutTop"].is-visible .modal-root,
+[data-animation="slideInOutLeft"].is-visible .modal-root,
+[data-animation="slideInOutRight"].is-visible .modal-root,
+[data-animation="zoomInOut"].is-visible .modal-root,
+[data-animation="rotateInOutDown"].is-visible .modal-root {
   transform: none;
 }
 

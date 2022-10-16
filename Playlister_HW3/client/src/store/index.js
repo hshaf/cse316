@@ -18,6 +18,8 @@ export const GlobalStoreActionType = {
     LOAD_ID_NAME_PAIRS: "LOAD_ID_NAME_PAIRS",
     SET_CURRENT_LIST: "SET_CURRENT_LIST",
     SET_LIST_NAME_EDIT_ACTIVE: "SET_LIST_NAME_EDIT_ACTIVE",
+    DELETE_LIST: "DELETE_LIST",
+    SELECT_DELETE_LIST: "SELECT_DELETE_LIST"
 }
 
 // WE'LL NEED THIS TO PROCESS TRANSACTIONS
@@ -31,7 +33,8 @@ export const useGlobalStore = () => {
         idNamePairs: [],
         currentList: null,
         newListCounter: 0,
-        listNameActive: false
+        listNameActive: false,
+        selectedDeleteList: null
     });
 
     // HERE'S THE DATA STORE'S REDUCER, IT MUST
@@ -102,6 +105,25 @@ export const useGlobalStore = () => {
                     listNameActive: true
                 });
             }
+            // Select a list to delete
+            case GlobalStoreActionType.SELECT_DELETE_LIST: {
+                return setStore({
+                    idNamePairs: store.idNamePairs,
+                    currentList: null,
+                    newListCounter: store.newListCounter,
+                    listNameActive: false,
+                    selectedDeleteList: payload
+                });
+            }
+            // Delete a list
+            case GlobalStoreActionType.DELETE_LIST: {
+                return setStore({
+                    idNamePairs: store.idNamePairs,
+                    currentList: null,
+                    newListCounter: store.newListCounter,
+                    listNameActive: false
+                });
+            }
             default:
                 return store;
         }
@@ -134,8 +156,51 @@ export const useGlobalStore = () => {
         asyncCreateNewList();
     }
 
+    store.selectDeleteList = function (id) {
+        async function asyncSelectDeleteList(id) {
+            let playlist = store.idNamePairs.filter(list => list._id === id)[0];
+            storeReducer({
+                type: GlobalStoreActionType.SELECT_DELETE_LIST,
+                payload: playlist
+            })
+        }
+        asyncSelectDeleteList(id);
+        store.showDeleteListModal();
+    }
+
+    store.showDeleteListModal = function () {
+        let modal = document.getElementById("delete-list-modal");
+        modal.classList.add("is-visible");
+    }
+
+    store.hideDeleteListModal = function () {
+        let modal = document.getElementById("delete-list-modal");
+        modal.classList.remove("is-visible");
+    }
+
+    // This function deletes a list
+    store.deleteList = function () {
+        async function asyncDeleteList() {
+            let response = await api.deletePlaylist(store.selectedDeleteList._id);
+            if (response.data.success) {
+                console.log('delete list success');
+
+                storeReducer({
+                    type: GlobalStoreActionType.DELETE_LIST,
+                });
+                store.loadIdNamePairs();
+            }
+        }
+        asyncDeleteList();
+        store.hideDeleteListModal();
+    }
+
     // THIS FUNCTION PROCESSES CHANGING A LIST NAME
     store.changeListName = function (id, newName) {
+        if (!newName) {
+            console.log('New playlist name empty, could not change list name');
+            return;
+        }
         // GET THE LIST
         async function asyncChangeListName(id) {
             let response = await api.getPlaylistById(id);
