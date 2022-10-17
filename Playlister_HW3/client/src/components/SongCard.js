@@ -60,6 +60,10 @@ function SongCard(props) {
         console.log('source id=' + sourceId + ' to target id=' + targetId);
         store.addMoveSongTransaction(sourceId, targetId);
     }
+    function handleEditSong(event) {
+        event.stopPropagation();
+        store.selectEditSong(index);
+    }
 
     let cardClass = "list-card unselected-list-card";
     return (
@@ -72,6 +76,7 @@ function SongCard(props) {
             onDragEnter={handleDragEnter}
             onDragLeave={handleDragLeave}
             onDrop={handleDrop}
+            onDoubleClick={handleEditSong}
             draggable="true"
         >
             {index + 1}.
