@@ -64,6 +64,10 @@ function SongCard(props) {
         event.stopPropagation();
         store.selectEditSong(index);
     }
+    function handleDeleteSong(event) {
+        event.stopPropagation();
+        store.selectDeleteSong(index);
+    }
 
     let cardClass = "list-card unselected-list-card";
     return (
@@ -91,6 +95,7 @@ function SongCard(props) {
                 id={'remove-' + index + '-song'}
                 className="list-card-button"
                 value={"\u2715"}
+                onClick={handleDeleteSong}
             />
         </div>
     );

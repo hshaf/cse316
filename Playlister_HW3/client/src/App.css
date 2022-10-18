@@ -64,7 +64,7 @@ body {
 
 #playlist-selector, #playlist-cards {
   overflow: scroll;
-  height: 500px;
+  height: 80%;
   display: flex;
   flex-direction: column;
   /* grid-column: 1 / 3;
@@ -98,7 +98,7 @@ body {
 }
 
 #playlister-statusbar {
-  position: absolute;
+  position: absolute, fixed;
   left: 0%;
   top: 90%;
   width: 100%;
@@ -220,6 +220,11 @@ input {
 }
 
 #delete-list-span {
+  font-weight: bold;
+  font-style: italic;
+}
+
+#delete-song-span {
   font-weight: bold;
   font-style: italic;
 }

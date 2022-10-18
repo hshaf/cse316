@@ -38,7 +38,8 @@ export const useGlobalStore = () => {
         newListCounter: 0,
         listNameActive: false,
         selectedDeleteList: null,
-        selectedEditSong: 0
+        selectedEditSong: 0,
+        selectedDeleteSong: 0
     });
 
     // HERE'S THE DATA STORE'S REDUCER, IT MUST
@@ -311,6 +312,41 @@ export const useGlobalStore = () => {
             list.songs[end] = temp;
         }
         store.updateList();
+    }
+
+    store.selectDeleteSong = function (songId) {
+        async function asyncSelectDeleteSong(id) {
+            // Set selected delete song id
+            store.selectedDeleteSong = id;
+        }
+        if (!store.currentList) {
+            console.log('no list currently open, could not delete song');
+            return;
+        }
+        asyncSelectDeleteSong(songId);
+        store.showDeleteSongModal();
+    }
+
+    // This function deletes a song in a playlist
+    store.deleteSong = function (songId) {
+        store.currentList.songs.splice(songId, 1);
+        store.updateList();
+    }
+
+    store.deleteMarkedSong = function () {
+        store.deleteSong(store.selectedDeleteSong);
+        store.hideDeleteSongModal();
+    }
+
+    store.showDeleteSongModal = function () {
+        let modal = document.getElementById("delete-song-modal");
+        document.getElementById("delete-song-span").innerHTML = store.currentList.songs[store.selectedDeleteSong].title;
+        modal.classList.add("is-visible");
+    }
+
+    store.hideDeleteSongModal = function () {
+        let modal = document.getElementById("delete-song-modal");
+        modal.classList.remove("is-visible");
     }
 
     store.selectEditSong = function (songId) {
