@@ -42,7 +42,8 @@ export const useGlobalStore = () => {
         listNameActive: false,
         selectedDeleteList: null,
         selectedEditSong: 0,
-        selectedDeleteSong: 0
+        selectedDeleteSong: 0,
+        isModalOpen: false
     });
 
     // HERE'S THE DATA STORE'S REDUCER, IT MUST
@@ -120,7 +121,8 @@ export const useGlobalStore = () => {
                     currentList: null,
                     newListCounter: store.newListCounter,
                     listNameActive: false,
-                    selectedDeleteList: payload
+                    selectedDeleteList: payload,
+                    isModalOpen: true
                 });
             }
             // Select a song to delete
@@ -159,6 +161,57 @@ export const useGlobalStore = () => {
     // DRIVE THE STATE OF THE APPLICATION. WE'LL CALL THESE IN 
     // RESPONSE TO EVENTS INSIDE OUR COMPONENTS.
 
+    store.updateToolbarButtons = function () {
+        console.log('update toolbar buttons');
+        if (store.isModalOpen) {
+            store.disableButton("add-list-button");
+            store.disableButton("add-song-button");
+            store.disableButton("undo-button");
+            store.disableButton("redo-button");
+            store.disableButton("close-button");
+        }
+
+        else {
+            if (!store.currentList) {
+                store.disableButton("add-song-button");
+                store.disableButton("close-button");
+            }
+            else {
+                store.enableButton("add-song-button");
+                store.enableButton("close-button");
+            }
+            if (tps.hasTransactionToUndo()) {
+                store.enableButton("undo-button");
+            }
+            else {
+                store.disableButton("undo-button");
+            }
+            if (tps.hasTransactionToRedo()) {
+                store.enableButton("redo-button");
+            }
+            else {
+                store.disableButton("redo-button");
+            }
+            store.enableButton("add-list-button");
+        }
+    }
+
+    // This function enables a playlist button  
+    store.enableButton = function(id) {
+        let button = document.getElementById(id);
+        if(button == null) return;
+        button.classList.remove("disabled");
+        button.disabled = false;
+    }
+
+    // This function disables a playlist button
+    store.disableButton = function(id) {
+        let button = document.getElementById(id);
+        if(button == null) return;
+        button.classList.add("disabled");
+        button.disabled = true;
+    }
+
     // This function adds a new list
     store.createNewList = function () {
         const newPlaylist = {
@@ -196,11 +249,15 @@ export const useGlobalStore = () => {
     }
 
     store.showDeleteListModal = function () {
+        // store.isModalOpen = true;
+        store.updateToolbarButtons();
         let modal = document.getElementById("delete-list-modal");
         modal.classList.add("is-visible");
     }
 
     store.hideDeleteListModal = function () {
+        store.isModalOpen = false;
+        store.updateToolbarButtons();
         let modal = document.getElementById("delete-list-modal");
         modal.classList.remove("is-visible");
     }
@@ -371,12 +428,16 @@ export const useGlobalStore = () => {
     }
 
     store.showDeleteSongModal = function () {
+        store.isModalOpen = true;
+        store.updateToolbarButtons();
         let modal = document.getElementById("delete-song-modal");
         document.getElementById("delete-song-span").innerHTML = store.currentList.songs[store.selectedDeleteSong].title;
         modal.classList.add("is-visible");
     }
 
     store.hideDeleteSongModal = function () {
+        store.isModalOpen = false;
+        store.updateToolbarButtons();
         let modal = document.getElementById("delete-song-modal");
         modal.classList.remove("is-visible");
     }
@@ -431,6 +492,8 @@ export const useGlobalStore = () => {
     }
 
     store.showEditSongModal = function () {
+        store.isModalOpen = true;
+        store.updateToolbarButtons();
         let modal = document.getElementById("edit-song-modal");
         if (store.currentList && store.selectedEditSong < store.currentList.songs.length) {
             document.getElementById("edit-song-title-text").value = store.currentList.songs[store.selectedEditSong].title;
@@ -441,6 +504,8 @@ export const useGlobalStore = () => {
     }
 
     store.hideEditSongModal = function () {
+        store.isModalOpen = false;
+        store.updateToolbarButtons();
         let modal = document.getElementById("edit-song-modal");
         modal.classList.remove("is-visible");
     }

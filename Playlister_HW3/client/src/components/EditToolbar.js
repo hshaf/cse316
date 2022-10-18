@@ -30,6 +30,8 @@ function EditToolbar() {
     if (store.isListNameEditActive) {
         editStatus = true;
     }
+    store.updateToolbarButtons();
+    console.log('view refreshed');
     return (
         <span id="edit-toolbar">
             <input

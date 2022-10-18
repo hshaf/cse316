@@ -74,7 +74,7 @@ body {
 }
 
 .playlister-button, .playlister-button-disabled {
-  font-size:36pt;
+  font-size:30pt;
   border-width: 0px;
   float:left;
   color: black;
@@ -83,8 +83,10 @@ body {
   border-width: 1px;
   border-color: black;
   border-style: solid;
-  /* box-shadow: 2px 4px #888888; */
+  box-shadow: 2px 4px #888888;
   border-radius: 5px;
+  height: 70px;
+  width: 50px;
 }
 
 .playlister-button:hover {
@@ -92,9 +94,19 @@ body {
   color:black;
 }
 
-.playlister-button-disabled {
-  opacity: 0.25; 
+.playlister-button:disabled {
+  opacity: 0.75; 
   cursor: not-allowed;
+  color:gray;
+}
+
+.playlister-button:disabled:hover {
+  color:gray;
+}
+
+#your-lists-span {
+  font-size: 40px;
+  margin-left: 10px;
 }
 
 #playlister-statusbar {
