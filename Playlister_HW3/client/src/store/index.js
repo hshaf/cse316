@@ -161,6 +161,28 @@ export const useGlobalStore = () => {
     // DRIVE THE STATE OF THE APPLICATION. WE'LL CALL THESE IN 
     // RESPONSE TO EVENTS INSIDE OUR COMPONENTS.
 
+    // ctrl + z/y calls undo/redo
+    document.onkeydown = function (event) {
+        if (event.ctrlKey) {
+            if (event.key === 'z') {
+                // if a modal is open, do not allow undo
+                if (store.isModalOpen) {
+                    console.log('modal open, cannot undo');
+                    return;
+                }
+                store.undo();
+            }
+            else if (event.key === 'y') {
+                // if a modal is open, do not allow redo
+                if (store.isModalOpen) {
+                    console.log('modal open, cannot redo');
+                    return;
+                }
+                store.redo();
+            }
+        }
+    }
+
     store.updateToolbarButtons = function () {
         console.log('update toolbar buttons');
         if (store.isModalOpen) {
