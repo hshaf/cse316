@@ -1,6 +1,9 @@
 import { createContext, useState } from 'react'
 import jsTPS from '../common/jsTPS'
 import MoveSong_Transaction from '../transactions/MoveSong_Transaction';
+import AddSong_Transaction from '../transactions/AddSong_Transaction';
+import DeleteSong_Transaction from '../transactions/DeleteSong_Transaction';
+import EditSong_Transaction from '../transactions/EditSong_Transaction';
 import api from '../api'
 export const GlobalStoreContext = createContext({});
 /*
@@ -278,10 +281,6 @@ export const useGlobalStore = () => {
             // Add new song to list
             playlist.songs.push(song);
         }
-        if (!store.currentList) {
-            console.log('no list currently open, could not add song');
-            return;
-        }
         asyncAddSong();
         store.updateList();
     }
@@ -289,6 +288,19 @@ export const useGlobalStore = () => {
     // THIS FUNCTION ADDS A MoveSong_Transaction TO THE TRANSACTION STACK
     store.addMoveSongTransaction = function (start, end) {
         let transaction = new MoveSong_Transaction(store, start, end);
+        tps.addTransaction(transaction);
+    }
+
+    store.addAddSongTransaction = function () {
+        if (!store.currentList) {
+            console.log('no playlist open, could not add song');
+            return;
+        }
+        // if (this.state.isModalOpen) {
+        //     console.log('a modal is currently open, cannot add a song');
+        //     return;
+        // }
+        let transaction = new AddSong_Transaction(store);
         tps.addTransaction(transaction);
     }
 
@@ -333,8 +345,28 @@ export const useGlobalStore = () => {
         store.updateList();
     }
 
+    // This function restores a song previously deleted from a playlist
+    store.restoreSong = function (songId, songTitle, songArtist, songYoutubeId) {
+        let song = {
+            "title": songTitle,
+            "artist": songArtist,
+            "youTubeId": songYoutubeId
+        };
+        store.currentList.songs.splice(songId, 0, song);
+        store.updateList();
+    }
+
+    store.addDeleteSongTransaction = function (songId) {
+        if (!store.currentList) {
+            console.log('no playlist open, could not delete song');
+            return;
+        }
+        let transaction = new DeleteSong_Transaction(store, songId);
+        tps.addTransaction(transaction);
+    }
+
     store.deleteMarkedSong = function () {
-        store.deleteSong(store.selectedDeleteSong);
+        store.addDeleteSongTransaction(store.selectedDeleteSong);
         store.hideDeleteSongModal();
     }
 
@@ -374,13 +406,18 @@ export const useGlobalStore = () => {
         let artist = document.getElementById("edit-song-artist-text").value;
         let youTubeId = document.getElementById("edit-song-youtube-id-text").value;
 
-        store.editSong(title, artist, youTubeId);
+        store.addEditSongTransaction(store.selectedEditSong, title, artist, youTubeId);
         store.hideEditSongModal();
     }
 
-    store.editSong = function (songTitle, songArtist, songYoutubeId) {
-        async function asyncEditSong(songTitle, songArtist, songYoutubeId) {
-            let song = store.currentList.songs[store.selectedEditSong];
+    store.addEditSongTransaction = function (songId, songTitle, songArtist, songYoutubeId) {
+        let transaction = new EditSong_Transaction(store, songId, songTitle, songArtist, songYoutubeId);
+        tps.addTransaction(transaction);
+    }
+
+    store.editSong = function (songId, songTitle, songArtist, songYoutubeId) {
+        async function asyncEditSong(songId, songTitle, songArtist, songYoutubeId) {
+            let song = store.currentList.songs[songId];
             song.title = songTitle;
             song.artist = songArtist;
             song.youTubeId = songYoutubeId;
@@ -389,7 +426,7 @@ export const useGlobalStore = () => {
             console.log('no list currently open, could not add song');
             return;
         }
-        asyncEditSong(songTitle, songArtist, songYoutubeId);
+        asyncEditSong(songId, songTitle, songArtist, songYoutubeId);
         store.updateList();
     }
 
