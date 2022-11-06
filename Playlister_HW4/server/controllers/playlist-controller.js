@@ -64,7 +64,22 @@ deletePlaylist = async (req, res) => {
                 if (user._id == req.userId) {
                     console.log("correct user!");
                     Playlist.findOneAndDelete({ _id: req.params.id }, () => {
-                        return res.status(200).json({});
+                        user.playlists = user.playlists.filter(function(id) {
+                            return id != req.params.id;
+                        });
+                        user.save().then(() => {
+                            return res.status(200).json({
+                                success: true,
+                                id: list._id,
+                                message: 'Playlist deleted',
+                            })
+                        })
+                        .catch(error => {
+                            return res.status(400).json({
+                                error,
+                                message: 'Playlist could not be deleted',
+                            })
+                        })
                     }).catch(err => console.log(err))
                 }
                 else {
