@@ -16,6 +16,8 @@ import Paper from '@mui/material/Paper';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 
+import MUIAccountErrorModal from './MUIAccountErrorModal';
+
 export default function LoginScreen() {
     const { auth } = useContext(AuthContext);
 
@@ -32,6 +34,7 @@ export default function LoginScreen() {
     return (
         <Grid container component="main" sx={{ height: '100vh' }}>
             <CssBaseline />
+            <MUIAccountErrorModal />
             <Grid
                 item
                 xs={false}
