@@ -261,6 +261,10 @@ function GlobalStoreContextProvider(props) {
         history.push("/");
     }
 
+    store.clearTransactions = function() {
+        tps.clearAllTransactions();
+    }
+
     // THIS FUNCTION CREATES A NEW LIST
     store.createNewList = async function () {
         let newListName = "Untitled" + store.newListCounter;
@@ -318,10 +322,19 @@ function GlobalStoreContextProvider(props) {
         }
         getListToDelete(id);
     }
+    store.unmarkListForDeletion = function (id) {
+        storeReducer({
+            type: GlobalStoreActionType.MARK_LIST_FOR_DELETION,
+            payload: {
+                id: null, 
+                playlist: null
+            }
+        });
+    }
     store.deleteList = function (id) {
         async function processDelete(id) {
             let response = await api.deletePlaylistById(id);
-            if (response.data.success) {
+            if (response.status === 200) {
                 store.loadIdNamePairs();
                 history.push("/");
             }

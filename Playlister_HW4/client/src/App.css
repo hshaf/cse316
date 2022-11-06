@@ -84,6 +84,15 @@ body {
   opacity: 100%;
 }
 
+.modal-button {
+  font-size: 20pt;
+  margin: 5px;
+  border-width: 2px;
+  color: black;
+  cursor: pointer;
+  opacity: 100%;
+}
+
 .playlister-button:hover {
   cursor: pointer;
   color: black;
@@ -141,8 +150,12 @@ body {
 }
 
 #add-list-button {
-  pointer-events: none;
+  pointer-events: auto;
   float: left;
+}
+
+#delete-list-span {
+  font-weight: bold;
 }
 
 #list-selector-list {
