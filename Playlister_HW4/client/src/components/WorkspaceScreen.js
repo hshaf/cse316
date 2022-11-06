@@ -25,6 +25,7 @@ function WorkspaceScreen() {
         modalJSX = <MUIRemoveSongModal />;
     }
     return (
+        <>
         <Box>
         <List 
             id="playlist-cards" 
@@ -42,8 +43,9 @@ function WorkspaceScreen() {
             }
          </List>            
          { modalJSX }
-         <Statusbar />
          </Box>
+         <Statusbar />
+         </>
     )
 }
 
