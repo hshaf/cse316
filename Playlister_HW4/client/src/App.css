@@ -137,9 +137,11 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
+  pointer-events: none;
 }
 
 #add-list-button {
+  pointer-events: none;
   float: left;
 }
 
@@ -349,8 +351,8 @@ input {
 
 #account-error-close-button {
   padding-top: 10px;
-  background-color: #1565c0;
-  color: white;
+  /* background-color: #1565c0;
+  color: white; */
 }
 
 #account-error-box {

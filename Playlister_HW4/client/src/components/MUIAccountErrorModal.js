@@ -40,7 +40,7 @@ export default function MUIAccountErrorModal() {
                         </Alert>
                     </div>
                     <div>
-                        <Button id="account-error-close-button"
+                        <Button variant="contained" id="account-error-close-button"
                             onClick={handleClose}
                         >Close</Button>
                     </div>
