@@ -331,6 +331,7 @@ function GlobalStoreContextProvider(props) {
                 playlist: null
             }
         });
+        store.hideModals();
     }
     store.deleteList = function (id) {
         async function processDelete(id) {

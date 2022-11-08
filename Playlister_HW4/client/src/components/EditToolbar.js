@@ -15,6 +15,13 @@ import CloseIcon from '@mui/icons-material/HighlightOff';
 function EditToolbar() {
     const { store } = useContext(GlobalStoreContext);
 
+    let addSongClass = "playlister-button";
+    let undoClass = "playlister-button";
+    let redoClass = "playlister-button";
+    let closeClass = "playlister-button";
+
+    let isModalOpen = store.isEditSongModalOpen() || store.isRemoveSongModalOpen() || store.isDeleteListModalOpen();
+
     function handleAddNewSong() {
         store.addNewSong();
     }
@@ -30,30 +37,34 @@ function EditToolbar() {
     return (
         <div id="edit-toolbar">
             <Button
-                disabled={!store.canAddNewSong()}
+                disabled={!store.canAddNewSong() || isModalOpen || !store.currentList}
                 id='add-song-button'
                 onClick={handleAddNewSong}
+                className={addSongClass}
                 variant="contained">
                 <AddIcon />
             </Button>
             <Button 
-                disabled={!store.canUndo()}
+                disabled={!store.canUndo() || isModalOpen || !store.currentList}
                 id='undo-button'
                 onClick={handleUndo}
+                className={undoClass}
                 variant="contained">
                     <UndoIcon />
             </Button>
             <Button 
-                disabled={!store.canRedo()}
+                disabled={!store.canRedo() || isModalOpen || !store.currentList}
                 id='redo-button'
                 onClick={handleRedo}
+                className={redoClass}
                 variant="contained">
                     <RedoIcon />
             </Button>
             <Button 
-                disabled={!store.canClose()}
+                disabled={!store.canClose() || isModalOpen || !store.currentList}
                 id='close-button'
                 onClick={handleClose}
+                className={closeClass}
                 variant="contained">
                     <CloseIcon />
             </Button>

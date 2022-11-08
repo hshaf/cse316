@@ -15,6 +15,10 @@ import Typography from '@mui/material/Typography'
 const HomeScreen = () => {
     const { store } = useContext(GlobalStoreContext);
 
+    let addListClass = "playlister-button";
+
+    let isModalOpen = store.isDeleteListModalOpen();
+
     useEffect(() => {
         store.loadIdNamePairs();
     }, []);
@@ -41,10 +45,12 @@ const HomeScreen = () => {
         <div id="playlist-selector">
             <div id="list-selector-heading">
             <Fab 
+                disabled={isModalOpen}
                 color="primary" 
                 aria-label="add"
                 id="add-list-button"
                 onClick={handleCreateNewList}
+                className={addListClass}
             >
                 <AddIcon />
             </Fab>
