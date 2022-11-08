@@ -347,6 +347,28 @@ function GlobalStoreContextProvider(props) {
         store.deleteList(store.listIdMarkedForDeletion);
         store.hideModals();
     }
+
+    // ctrl + z/y calls undo/redo
+    document.onkeydown = function (event) {
+        if (event.ctrlKey) {
+            if (event.key === 'z') {
+                // if a modal is open, do not allow undo
+                if (store.isDeleteListModalOpen() || store.isEditSongModalOpen() || store.isRemoveSongModalOpen()) {
+                    console.log('modal open, cannot undo');
+                    return;
+                }
+                store.undo();
+            }
+            else if (event.key === 'y') {
+                // if a modal is open, do not allow redo
+                if (store.isDeleteListModalOpen() || store.isEditSongModalOpen() || store.isRemoveSongModalOpen()) {
+                    console.log('modal open, cannot redo');
+                    return;
+                }
+                store.redo();
+            }
+        }
+    }
     // THIS FUNCTION SHOWS THE MODAL FOR PROMPTING THE USER
     // TO SEE IF THEY REALLY WANT TO DELETE THE LIST
 
