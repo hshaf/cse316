@@ -22,6 +22,7 @@ export default function RegisterScreen() {
         event.preventDefault();
         const formData = new FormData(event.currentTarget);
         auth.registerUser(
+            formData.get('username'),
             formData.get('firstName'),
             formData.get('lastName'),
             formData.get('email'),
@@ -41,6 +42,7 @@ export default function RegisterScreen() {
                         flexDirection: 'column',
                         alignItems: 'center',
                     }}
+                    style={{marginTop: '30px'}}
                 >
                     <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
                         <LockOutlinedIcon />
@@ -50,25 +52,15 @@ export default function RegisterScreen() {
                     </Typography>
                     <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
                         <Grid container spacing={2}>
-                            <Grid item xs={12} sm={6}>
+                            <Grid item xs={12}>
                                 <TextField
-                                    autoComplete="fname"
-                                    name="firstName"
                                     required
                                     fullWidth
-                                    id="firstName"
-                                    label="First Name"
+                                    id="username"
+                                    label="User Name"
+                                    name="username"
+                                    autoComplete="username"
                                     autoFocus
-                                />
-                            </Grid>
-                            <Grid item xs={12} sm={6}>
-                                <TextField
-                                    required
-                                    fullWidth
-                                    id="lastName"
-                                    label="Last Name"
-                                    name="lastName"
-                                    autoComplete="lname"
                                 />
                             </Grid>
                             <Grid item xs={12}>
@@ -79,6 +71,26 @@ export default function RegisterScreen() {
                                     label="Email Address"
                                     name="email"
                                     autoComplete="email"
+                                />
+                            </Grid>
+                            <Grid item xs={12} sm={6}>
+                                <TextField
+                                    autoComplete="fname"
+                                    name="firstName"
+                                    required
+                                    fullWidth
+                                    id="firstName"
+                                    label="First Name"
+                                />
+                            </Grid>
+                            <Grid item xs={12} sm={6}>
+                                <TextField
+                                    required
+                                    fullWidth
+                                    id="lastName"
+                                    label="Last Name"
+                                    name="lastName"
+                                    autoComplete="lname"
                                 />
                             </Grid>
                             <Grid item xs={12}>
@@ -112,16 +124,8 @@ export default function RegisterScreen() {
                         >
                             Sign Up
                         </Button>
-                        <Grid container justifyContent="flex-end">
-                            <Grid item>
-                                <Link href="/login/" variant="body2">
-                                    Already have an account? Sign in
-                                </Link>
-                            </Grid>
-                        </Grid>
                     </Box>
                 </Box>
-                <Copyright sx={{ mt: 5 }} />
             </Container>
     );
 }

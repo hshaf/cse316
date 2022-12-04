@@ -3,10 +3,11 @@ import { Link } from 'react-router-dom'
 import AuthContext from '../auth';
 import { GlobalStoreContext } from '../store'
 import { useLocation } from 'react-router-dom';
+import playlisterlogo from './playlister-logo.png';
 
 import EditToolbar from './EditToolbar'
 
-import AccountCircle from '@mui/icons-material/AccountCircle';
+import AccountCircleOutlinedIcon from '@mui/icons-material/AccountCircleOutlined';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import IconButton from '@mui/material/IconButton';
@@ -94,7 +95,7 @@ export default function AppBanner() {
         if (loggedIn) 
             return <div>{userInitials}</div>;
         else
-            return <AccountCircle />;
+            return <AccountCircleOutlinedIcon style={{color: 'black'}} />;
     }
 
     let location = useLocation();
@@ -107,15 +108,15 @@ export default function AppBanner() {
     else {
         return (
             <Box sx={{ flexGrow: 1 }}>
-                <AppBar position="static">
-                    <Toolbar>
+                <AppBar position="static" style={{ background: '#e6e6e6' }}>
+                    <Toolbar style={{minHeight: '50px', maxHeight: '50px', paddingLeft: '0px'}}>
                         <Typography                        
                             variant="h4"
                             noWrap
                             component="div"
                             sx={{ display: { xs: 'none', sm: 'block' } }}                        
                         >
-                            <Link style={{ textDecoration: 'none', color: 'white' }} onClick={handleHomeLink} to='/'>⌂</Link>
+                            <Link style={{ textDecoration: 'none', color: 'white' }} onClick={handleHomeLink} to='/'><img src={playlisterlogo} style={{width: 150, paddingTop: 5}}></img></Link>
                         </Typography>
                         <Box sx={{ flexGrow: 1 }}>{editToolbar}</Box>
                         <Box sx={{ display: { xs: 'none', md: 'flex' } }}>

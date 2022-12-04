@@ -73,6 +73,7 @@ loginUser = async (req, res) => {
         }).status(200).json({
             success: true,
             user: {
+                username: existingUser.username,
                 firstName: existingUser.firstName,
                 lastName: existingUser.lastName,  
                 email: existingUser.email              
@@ -96,9 +97,9 @@ logoutUser = async (req, res) => {
 
 registerUser = async (req, res) => {
     try {
-        const { firstName, lastName, email, password, passwordVerify } = req.body;
+        const { username, firstName, lastName, email, password, passwordVerify } = req.body;
         console.log("create user: " + firstName + " " + lastName + " " + email + " " + password + " " + passwordVerify);
-        if (!firstName || !lastName || !email || !password || !passwordVerify) {
+        if (!username || !firstName || !lastName || !email || !password || !passwordVerify) {
             return res
                 .status(400)
                 .json({ errorMessage: "Please enter all required fields." });
@@ -130,6 +131,16 @@ registerUser = async (req, res) => {
                     errorMessage: "An account with this email address already exists."
                 })
         }
+        const existingUsername = await User.findOne({ username: username });
+        console.log("existingUsername: " + existingUsername);
+        if (existingUsername) {
+            return res
+                .status(400)
+                .json({
+                    success: false,
+                    errorMessage: "An account with this username already exists."
+                })
+        }
 
         const saltRounds = 10;
         const salt = await bcrypt.genSalt(saltRounds);
@@ -137,29 +148,35 @@ registerUser = async (req, res) => {
         console.log("passwordHash: " + passwordHash);
 
         const newUser = new User({
-            firstName, lastName, email, passwordHash
+            username, firstName, lastName, email, passwordHash
         });
         const savedUser = await newUser.save();
         console.log("new user saved: " + savedUser._id);
 
+        return res
+                .status(200)
+                .json({
+                    success: true
+                })
+
         // LOGIN THE USER
-        const token = auth.signToken(savedUser._id);
-        console.log("token:" + token);
+        // const token = auth.signToken(savedUser._id);
+        // console.log("token:" + token);
 
-        await res.cookie("token", token, {
-            httpOnly: true,
-            secure: true,
-            sameSite: "none"
-        }).status(200).json({
-            success: true,
-            user: {
-                firstName: savedUser.firstName,
-                lastName: savedUser.lastName,  
-                email: savedUser.email              
-            }
-        })
+        // await res.cookie("token", token, {
+        //     httpOnly: true,
+        //     secure: true,
+        //     sameSite: "none"
+        // }).status(200).json({
+        //     success: true,
+        //     user: {
+        //         firstName: savedUser.firstName,
+        //         lastName: savedUser.lastName,  
+        //         email: savedUser.email              
+        //     }
+        // })
 
-        console.log("token sent");
+        // console.log("token sent");
 
     } catch (err) {
         console.error(err);
