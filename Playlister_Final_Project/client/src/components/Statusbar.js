@@ -26,13 +26,14 @@ function Statusbar() {
         <div id="playlister-statusbar">
             <Fab 
                 disabled={isModalOpen}
-                color="primary" 
+                color="transparent" 
+                style={{background: 'transparent', boxShadow: 'none', marginBottom:'5px'}}
                 aria-label="add"
                 id="add-list-button"
                 onClick={handleCreateNewList}
                 className={addListClass}
             >
-                <AddIcon />
+                <AddIcon style={{fontSize:'48px'}}/>
             </Fab>
                 <Typography variant="h2" style={{fontSize:'40px', fontFamily: "Calibri, sans-serif"}}>Your Lists</Typography>
         </div>

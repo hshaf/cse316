@@ -25,6 +25,7 @@ export const GlobalStoreActionType = {
     CLOSE_CURRENT_LIST: "CLOSE_CURRENT_LIST",
     CREATE_NEW_LIST: "CREATE_NEW_LIST",
     LOAD_ID_NAME_PAIRS: "LOAD_ID_NAME_PAIRS",
+    LOAD_USER_PLAYLISTS: "LOAD_USER_PLAYLISTS",
     MARK_LIST_FOR_DELETION: "MARK_LIST_FOR_DELETION",
     SET_CURRENT_LIST: "SET_CURRENT_LIST",
     SET_LIST_NAME_EDIT_ACTIVE: "SET_LIST_NAME_EDIT_ACTIVE",
@@ -50,6 +51,7 @@ function GlobalStoreContextProvider(props) {
     const [store, setStore] = useState({
         currentModal : CurrentModal.NONE,
         idNamePairs: [],
+        userPlaylists: [],
         currentList: null,
         currentSongIndex : -1,
         currentSong : null,
@@ -76,6 +78,7 @@ function GlobalStoreContextProvider(props) {
                 return setStore({
                     currentModal : CurrentModal.NONE,
                     idNamePairs: payload.idNamePairs,
+                    userPlaylists: store.userPlaylists,
                     currentList: payload.playlist,
                     currentSongIndex: -1,
                     currentSong: null,
@@ -90,6 +93,7 @@ function GlobalStoreContextProvider(props) {
                 return setStore({
                     currentModal : CurrentModal.NONE,
                     idNamePairs: store.idNamePairs,
+                    userPlaylists: store.userPlaylists,
                     currentList: null,
                     currentSongIndex: -1,
                     currentSong: null,
@@ -104,6 +108,7 @@ function GlobalStoreContextProvider(props) {
                 return setStore({
                     currentModal : CurrentModal.NONE,
                     idNamePairs: store.idNamePairs,
+                    userPlaylists: store.userPlaylists,
                     currentList: payload,
                     currentSongIndex: -1,
                     currentSong: null,
@@ -118,6 +123,22 @@ function GlobalStoreContextProvider(props) {
                 return setStore({
                     currentModal : CurrentModal.NONE,
                     idNamePairs: payload,
+                    userPlaylists: store.userPlaylists,
+                    currentList: null,
+                    currentSongIndex: -1,
+                    currentSong: null,
+                    newListCounter: store.newListCounter,
+                    listNameActive: false,
+                    listIdMarkedForDeletion: null,
+                    listMarkedForDeletion: null
+                });
+            }
+            // Get all of the user's playlists
+            case GlobalStoreActionType.LOAD_USER_PLAYLISTS: {
+                return setStore({
+                    currentModal : CurrentModal.NONE,
+                    idNamePairs: store.idNamePairs,
+                    userPlaylists: payload,
                     currentList: null,
                     currentSongIndex: -1,
                     currentSong: null,
@@ -132,6 +153,7 @@ function GlobalStoreContextProvider(props) {
                 return setStore({
                     currentModal : CurrentModal.DELETE_LIST,
                     idNamePairs: store.idNamePairs,
+                    userPlaylists: store.userPlaylists,
                     currentList: null,
                     currentSongIndex: -1,
                     currentSong: null,
@@ -146,6 +168,7 @@ function GlobalStoreContextProvider(props) {
                 return setStore({
                     currentModal : CurrentModal.NONE,
                     idNamePairs: store.idNamePairs,
+                    userPlaylists: store.userPlaylists,
                     currentList: payload,
                     currentSongIndex: -1,
                     currentSong: null,
@@ -160,6 +183,7 @@ function GlobalStoreContextProvider(props) {
                 return setStore({
                     currentModal : CurrentModal.NONE,
                     idNamePairs: store.idNamePairs,
+                    userPlaylists: store.userPlaylists,
                     currentList: payload,
                     currentSongIndex: -1,
                     currentSong: null,
@@ -174,6 +198,7 @@ function GlobalStoreContextProvider(props) {
                 return setStore({
                     currentModal : CurrentModal.EDIT_SONG,
                     idNamePairs: store.idNamePairs,
+                    userPlaylists: store.userPlaylists,
                     currentList: store.currentList,
                     currentSongIndex: payload.currentSongIndex,
                     currentSong: payload.currentSong,
@@ -187,6 +212,7 @@ function GlobalStoreContextProvider(props) {
                 return setStore({
                     currentModal : CurrentModal.REMOVE_SONG,
                     idNamePairs: store.idNamePairs,
+                    userPlaylists: store.userPlaylists,
                     currentList: store.currentList,
                     currentSongIndex: payload.currentSongIndex,
                     currentSong: payload.currentSong,
@@ -200,6 +226,7 @@ function GlobalStoreContextProvider(props) {
                 return setStore({
                     currentModal : CurrentModal.NONE,
                     idNamePairs: store.idNamePairs,
+                    userPlaylists: store.userPlaylists,
                     currentList: store.currentList,
                     currentSongIndex: -1,
                     currentSong: null,
@@ -269,7 +296,7 @@ function GlobalStoreContextProvider(props) {
     // THIS FUNCTION CREATES A NEW LIST
     store.createNewList = async function () {
         let newListName = "Untitled" + store.newListCounter;
-        const response = await api.createPlaylist(newListName, [], auth.user.email);
+        const response = await api.createPlaylist(newListName, [], auth.user.email, auth.user.username);
         console.log("createNewList response: " + response);
         if (response.status === 201) {
             tps.clearAllTransactions();
@@ -304,6 +331,24 @@ function GlobalStoreContextProvider(props) {
             }
         }
         asyncLoadIdNamePairs();
+    }
+
+    // This function loads the users playlists
+    store.loadUserPlaylists = function () {
+        async function asyncLoadUserPlaylists() {
+            const response = await api.getPlaylists();
+            if (response.data.success) {
+                let playlists = response.data.data;
+                storeReducer({
+                    type: GlobalStoreActionType.LOAD_USER_PLAYLISTS,
+                    payload: playlists
+                });
+            }
+            else {
+                console.log("API FAILED TO GET THE USER'S PLAYLISTS");
+            }
+        }
+        asyncLoadUserPlaylists();
     }
 
     // THE FOLLOWING 5 FUNCTIONS ARE FOR COORDINATING THE DELETION

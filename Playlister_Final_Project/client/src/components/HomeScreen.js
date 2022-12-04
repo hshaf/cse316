@@ -9,6 +9,7 @@ import List from '@mui/material/List';
 import Typography from '@mui/material/Typography'
 import Statusbar from './Statusbar.js'
 import SearchToolbar from './SearchToolbar';
+import Box from '@mui/material/Box';
 /*
     This React component lists all the top5 lists in the UI.
     
@@ -21,8 +22,12 @@ const HomeScreen = () => {
 
     let isModalOpen = store.isDeleteListModalOpen();
 
+    // useEffect(() => {
+    //     store.loadIdNamePairs();
+    // }, []);
+
     useEffect(() => {
-        store.loadIdNamePairs();
+        store.loadUserPlaylists();
     }, []);
 
     function handleCreateNewList() {
@@ -31,12 +36,12 @@ const HomeScreen = () => {
     let listCard = "";
     if (store) {
         listCard = 
-            <List sx={{ width: '90%', left: '5%', bgcolor: 'background.paper' }}>
+            <List sx={{ position:'inherit', width: '96%', left: '5%', bgcolor: 'transparent', padding:'0px' }}>
             {
-                store.idNamePairs.map((pair) => (
+                store.userPlaylists.map((playlist) => (
                     <ListCard
-                        key={pair._id}
-                        idNamePair={pair}
+                        key={playlist._id}
+                        playlist={playlist}
                         selected={false}
                     />
                 ))
@@ -46,14 +51,16 @@ const HomeScreen = () => {
     return (
         <div id="homescreen">
             <SearchToolbar />
-            {/* <div id="playlist-selector">
-                <div id="list-selector-list">
-                    {
-                        listCard
-                    }
-                    <MUIDeleteModal />
+            <Box id="lists-and-player-box">
+                <div id="playlister-selector">
+                    <div id="list-selector-list">
+                        {
+                            listCard
+                        }
+                        <MUIDeleteModal />
+                    </div>
                 </div>
-            </div> */}
+            </Box>
             <Statusbar />
         </div>)
 }
