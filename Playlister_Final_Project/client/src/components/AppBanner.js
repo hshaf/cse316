@@ -43,6 +43,7 @@ export default function AppBanner() {
     const menuId = 'primary-search-account-menu';
     const loggedOutMenu = (
         <Menu
+            sx={{mt:'45px'}}
             anchorEl={anchorEl}
             anchorOrigin={{
                 vertical: 'top',
@@ -63,6 +64,7 @@ export default function AppBanner() {
     );
     const loggedInMenu = 
         <Menu
+            sx={{mt:'55px'}}
             anchorEl={anchorEl}
             anchorOrigin={{
                 vertical: 'top',
@@ -110,14 +112,7 @@ export default function AppBanner() {
             <Box sx={{ flexGrow: 1 }}>
                 <AppBar position="static" style={{ background: '#e6e6e6' }}>
                     <Toolbar style={{minHeight: '50px', maxHeight: '50px', paddingLeft: '0px'}}>
-                        <Typography                        
-                            variant="h4"
-                            noWrap
-                            component="div"
-                            sx={{ display: { xs: 'none', sm: 'block' } }}                        
-                        >
-                            <Link style={{ textDecoration: 'none', color: 'white' }} onClick={handleHomeLink} to='/'><img src={playlisterlogo} style={{width: 150, paddingTop: 5}}></img></Link>
-                        </Typography>
+                        <Link style={{ textDecoration: 'none', color: 'white' }} onClick={handleHomeLink} to='/'><img src={playlisterlogo} style={{width: 150, paddingTop: 5}}></img></Link>
                         <Box sx={{ flexGrow: 1 }}>{editToolbar}</Box>
                         <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
                             <IconButton

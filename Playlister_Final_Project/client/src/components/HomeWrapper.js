@@ -10,10 +10,7 @@ export default function HomeWrapper() {
     
     if (auth.loggedIn)
         return (
-            <div>
             <HomeScreen />
-            <Statusbar />
-            </div>
         );
     else
         return <SplashScreen />

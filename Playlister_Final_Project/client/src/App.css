@@ -21,7 +21,8 @@ body {
 }
 
 #root {
-  background-color: var(--swatch-primary);
+  /* background-color: var(--swatch-primary); */
+  background-color: #cecbcb;
   font-family: "Lexend Exa";
   position: absolute;
   width: 80%;
@@ -158,7 +159,7 @@ body {
   top: 90%;
   width: 100%;
   height: 10%;
-  background-color: lightsalmon;
+  background-color: #cecbcb;
   display: flex;
   align-items: center;
   justify-content: center;
