@@ -93,7 +93,7 @@ export default function AppBanner() {
         let userInitials = auth.getUserInitials();
         console.log("userInitials: " + userInitials);
         if (loggedIn) 
-            return <div>{userInitials}</div>;
+            return <div id="user-initials"><div id="user-initials-text">{userInitials}</div></div>;
         else
             return <AccountCircleOutlinedIcon style={{color: 'black'}} />;
     }

@@ -84,6 +84,22 @@ body {
   left: 45%;
 }
 
+#user-initials {
+  color: black;
+  outline: 2px solid black;
+  border-radius: 50%;
+  height: 40px;
+  width: 40px;
+  background-color: rgb(207, 61, 207);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#user-initials-text {
+  font-size: 24px;
+}
+
 #edit-toolbar {
   background-color: transparent;
   float: right;
