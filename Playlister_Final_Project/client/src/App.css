@@ -167,6 +167,12 @@ body {
   min-height: 40vh;
 }
 
+#song-card-selector {
+  position: inherit;
+  /* max-height: 300px; */
+  overflow: auto;
+}
+
 #player-info-and-buttons {
   min-height: 20vh;
   outline: 2px solid black;
@@ -241,10 +247,17 @@ body {
 .list-card,
 .selected-list-card,
 .unselected-list-card {
-  font-size: 18pt;
+  font-size: 16pt;
   margin: 10px;
   padding: 20px;
   border-radius: 25px;
+  background-color: #242960;
+  font-family: sans-serif;
+  font-weight: bold;
+  height: 24px;
+  border: 2px solid black;
+  border-radius: 13px;
+  margin-bottom: 0px;
 }
 
 #delete-song-span {
@@ -261,22 +274,38 @@ body {
 
 .unselected-list-card:hover {
   cursor: pointer;
-  background-color: var(--swatch-contrast);
+  background-color: #242960;
   color: white;
+  font-family: sans-serif;
+  height: 24px;
 }
 
 .selected-list-card {
-  background-color: var(--swatch-accent);
+  background-color: #242960;
   color: white;
+  font-family: sans-serif;
+  font-family: sans-serif;
+  font-weight: bold;
+  height: 24px;
 }
 
 .unselected-list-card {
-  background-color: var(--swatch-complement);
+  background-color: #242960;
+  color:white;
+  font-family: sans-serif;
 }
 
 .list-card-button {
   float: right;
   transform: scale(2);
+  width: 20px;
+  height: 25px;
+  font-size: 10px;
+  font-weight: bold;
+  /* color: white; */
+  background-color: transparent;
+  border-color: #242960;
+  color: white;
 }
 
 #workspace-home,

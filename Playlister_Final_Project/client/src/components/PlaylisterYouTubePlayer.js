@@ -1,12 +1,16 @@
 import React from 'react';
 import YouTube from 'react-youtube';
 
+import { useContext } from 'react'
+import { GlobalStoreContext } from '../store'
+
 export default function PlaylisterYouTubePlayer(props) {
     // THIS EXAMPLE DEMONSTRATES HOW TO DYNAMICALLY MAKE A
     // YOUTUBE PLAYER AND EMBED IT IN YOUR SITE. IT ALSO
     // DEMONSTRATES HOW TO IMPLEMENT A PLAYLIST THAT MOVES
     // FROM ONE SONG TO THE NEXT
     const { songs } = props;
+    const { store } = useContext(GlobalStoreContext);
 
     // THIS HAS THE YOUTUBE IDS FOR THE SONGS IN OUR PLAYLIST
     let playlist = songs;
@@ -29,6 +33,14 @@ export default function PlaylisterYouTubePlayer(props) {
         let song = playlist[currentSong];
         player.loadVideoById(song);
         player.playVideo();
+        
+        if (store.currentList.songs.length > 0) {
+            // Update playlist info box below player
+            document.getElementById("current-playlist-text").innerHTML = 'Playlist: ' + store.currentList.name;
+            document.getElementById("current-song-text").innerHTML = 'Song #: ' + currentSong + 1;
+            document.getElementById("current-song-title-text").innerHTML = 'Title: ' + store.currentList.songs[currentSong].title;
+            document.getElementById("current-song-artist-text").innerHTML = 'Artist: ' + store.currentList.songs[currentSong].artist;
+        }
     }
 
     // THIS FUNCTION INCREMENTS THE PLAYLIST SONG TO THE NEXT ONE

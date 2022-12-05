@@ -34,7 +34,7 @@ function WorkspaceScreen() {
         <Box>
         <List 
             id="playlist-cards" 
-            sx={{ width: '100%', bgcolor: 'background.paper' }}
+            sx={{ maxHeight:'250px',width: '100%', bgcolor: 'transparent' }}
         >
             {
                 store.currentList.songs.map((song, index) => (
@@ -49,7 +49,6 @@ function WorkspaceScreen() {
          </List>            
          { modalJSX }
          </Box>
-         <Statusbar />
          </>
     )
 }

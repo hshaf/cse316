@@ -23,6 +23,9 @@ console.log("create GlobalStoreContext");
 export const GlobalStoreActionType = {
     CHANGE_LIST_NAME: "CHANGE_LIST_NAME",
     CLOSE_CURRENT_LIST: "CLOSE_CURRENT_LIST",
+    SET_IS_EXPANDED_LIST: "SET_IS_EXPANDED_LIST",
+    SET_IS_PLAYING_LIST: "SET_IS_PLAYING_LIST",
+    REFRESH_STORE: "REFRESH_STORE",
     CREATE_NEW_LIST: "CREATE_NEW_LIST",
     LOAD_ID_NAME_PAIRS: "LOAD_ID_NAME_PAIRS",
     LOAD_USER_PLAYLISTS: "LOAD_USER_PLAYLISTS",
@@ -53,6 +56,8 @@ function GlobalStoreContextProvider(props) {
         idNamePairs: [],
         userPlaylists: [],
         currentList: null,
+        isExpandedList: false,
+        isPlayingList: false,
         currentSongIndex : -1,
         currentSong : null,
         newListCounter: 0,
@@ -80,6 +85,8 @@ function GlobalStoreContextProvider(props) {
                     idNamePairs: payload.idNamePairs,
                     userPlaylists: store.userPlaylists,
                     currentList: payload.playlist,
+                    isExpandedList: store.isExpandedList,
+                    isPlayingList: store.isPlayingList,
                     currentSongIndex: -1,
                     currentSong: null,
                     newListCounter: store.newListCounter,
@@ -95,6 +102,8 @@ function GlobalStoreContextProvider(props) {
                     idNamePairs: store.idNamePairs,
                     userPlaylists: store.userPlaylists,
                     currentList: null,
+                    isExpandedList: false,
+                    isPlayingList: false,
                     currentSongIndex: -1,
                     currentSong: null,
                     newListCounter: store.newListCounter,
@@ -110,6 +119,8 @@ function GlobalStoreContextProvider(props) {
                     idNamePairs: store.idNamePairs,
                     userPlaylists: store.userPlaylists,
                     currentList: payload,
+                    isExpandedList: true,
+                    isPlayingList: false,
                     currentSongIndex: -1,
                     currentSong: null,
                     newListCounter: store.newListCounter + 1,
@@ -125,6 +136,8 @@ function GlobalStoreContextProvider(props) {
                     idNamePairs: payload,
                     userPlaylists: store.userPlaylists,
                     currentList: null,
+                    isExpandedList: store.isExpandedList,
+                    isPlayingList: store.isPlayingList,
                     currentSongIndex: -1,
                     currentSong: null,
                     newListCounter: store.newListCounter,
@@ -140,6 +153,8 @@ function GlobalStoreContextProvider(props) {
                     idNamePairs: store.idNamePairs,
                     userPlaylists: payload,
                     currentList: null,
+                    isExpandedList: store.isExpandedList,
+                    isPlayingList: store.isPlayingList,
                     currentSongIndex: -1,
                     currentSong: null,
                     newListCounter: store.newListCounter,
@@ -155,6 +170,8 @@ function GlobalStoreContextProvider(props) {
                     idNamePairs: store.idNamePairs,
                     userPlaylists: store.userPlaylists,
                     currentList: null,
+                    isExpandedList: store.isExpandedList,
+                    isPlayingList: store.isPlayingList,
                     currentSongIndex: -1,
                     currentSong: null,
                     newListCounter: store.newListCounter,
@@ -163,13 +180,65 @@ function GlobalStoreContextProvider(props) {
                     listMarkedForDeletion: payload.playlist
                 });
             }
+            case GlobalStoreActionType.REFRESH_STORE: {
+                return setStore({
+                    currentModal : store.currentModal,
+                    idNamePairs: store.idNamePairs,
+                    userPlaylists: store.userPlaylists,
+                    currentList: store.currentList,
+                    isExpandedList: store.isExpandedList,
+                    isPlayingList: store.isPlayingList,
+                    currentSongIndex: store.currentSongIndex,
+                    currentSong: store.currentSong,
+                    newListCounter: store.newListCounter,
+                    listNameActive: store.listNameActive,
+                    listIdMarkedForDeletion: store.listIdMarkedForDeletion,
+                    listMarkedForDeletion: store.listMarkedForDeletion
+                });
+            }
             // UPDATE A LIST
             case GlobalStoreActionType.SET_CURRENT_LIST: {
                 return setStore({
                     currentModal : CurrentModal.NONE,
                     idNamePairs: store.idNamePairs,
                     userPlaylists: store.userPlaylists,
-                    currentList: payload,
+                    currentList: payload.playlist,
+                    isExpandedList: payload.isExtendList,
+                    isPlayingList: payload.isPlayingList,
+                    currentSongIndex: -1,
+                    currentSong: null,
+                    newListCounter: store.newListCounter,
+                    listNameActive: false,
+                    listIdMarkedForDeletion: null,
+                    listMarkedForDeletion: null
+                });
+            }
+            // For expanding lists
+            case GlobalStoreActionType.SET_IS_EXPANDED_LIST: {
+                return setStore({
+                    currentModal : CurrentModal.NONE,
+                    idNamePairs: store.idNamePairs,
+                    userPlaylists: store.userPlaylists,
+                    currentList: store.currentList,
+                    isExpandedList: payload,
+                    isPlayingList: store.isPlayingList,
+                    currentSongIndex: -1,
+                    currentSong: null,
+                    newListCounter: store.newListCounter,
+                    listNameActive: false,
+                    listIdMarkedForDeletion: null,
+                    listMarkedForDeletion: null
+                });
+            }
+            // For playing lists
+            case GlobalStoreActionType.SET_IS_PLAYING_LIST: {
+                return setStore({
+                    currentModal : CurrentModal.NONE,
+                    idNamePairs: store.idNamePairs,
+                    userPlaylists: store.userPlaylists,
+                    currentList: store.currentList,
+                    isExpandedList: store.isExpandedList,
+                    isPlayingList: payload,
                     currentSongIndex: -1,
                     currentSong: null,
                     newListCounter: store.newListCounter,
@@ -185,6 +254,8 @@ function GlobalStoreContextProvider(props) {
                     idNamePairs: store.idNamePairs,
                     userPlaylists: store.userPlaylists,
                     currentList: payload,
+                    isExpandedList: store.isExpandedList,
+                    isPlayingList: store.isPlayingList,
                     currentSongIndex: -1,
                     currentSong: null,
                     newListCounter: store.newListCounter,
@@ -200,6 +271,8 @@ function GlobalStoreContextProvider(props) {
                     idNamePairs: store.idNamePairs,
                     userPlaylists: store.userPlaylists,
                     currentList: store.currentList,
+                    isExpandedList: store.isExpandedList,
+                    isPlayingList: store.isPlayingList,
                     currentSongIndex: payload.currentSongIndex,
                     currentSong: payload.currentSong,
                     newListCounter: store.newListCounter,
@@ -214,6 +287,8 @@ function GlobalStoreContextProvider(props) {
                     idNamePairs: store.idNamePairs,
                     userPlaylists: store.userPlaylists,
                     currentList: store.currentList,
+                    isExpandedList: store.isExpandedList,
+                    isPlayingList: store.isPlayingList,
                     currentSongIndex: payload.currentSongIndex,
                     currentSong: payload.currentSong,
                     newListCounter: store.newListCounter,
@@ -229,6 +304,8 @@ function GlobalStoreContextProvider(props) {
                     userPlaylists: store.userPlaylists,
                     currentList: store.currentList,
                     currentSongIndex: -1,
+                    isExpandedList: store.isExpandedList,
+                    isPlayingList: store.isPlayingList,
                     currentSong: null,
                     newListCounter: store.newListCounter,
                     listNameActive: false,
@@ -286,7 +363,42 @@ function GlobalStoreContextProvider(props) {
             payload: {}
         });
         tps.clearAllTransactions();
-        history.push("/");
+        // history.push("/");
+    }
+
+    store.playList = function (id) {
+        store.setCurrentList(id);
+        storeReducer({
+            type: GlobalStoreActionType.SET_IS_PLAYING_LIST,
+            payload: true
+        });
+    }
+
+    store.stopPlayingList = function () {
+        storeReducer({
+            type: GlobalStoreActionType.SET_IS_PLAYING_LIST,
+            payload: false
+        });
+    }
+
+    store.expandList = function () {
+        storeReducer({
+            type: GlobalStoreActionType.SET_IS_EXPANDED_LIST,
+            payload: true
+        });
+    }
+
+    store.closeExpandList = function () {
+        storeReducer({
+            type: GlobalStoreActionType.SET_IS_EXPANDED_LIST,
+            payload: false
+        });
+    }
+
+    store.refreshStore = function () {
+        storeReducer({
+            type: GlobalStoreActionType.REFRESH_STORE
+        });
     }
 
     store.clearTransactions = function() {
@@ -308,7 +420,7 @@ function GlobalStoreContextProvider(props) {
             );
 
             // IF IT'S A VALID LIST THEN LET'S START EDITING IT
-            history.push("/playlist/" + newList._id);
+            // history.push("/playlist/" + newList._id);
         }
         else {
             console.log("API FAILED TO CREATE A NEW LIST");
@@ -449,8 +561,8 @@ function GlobalStoreContextProvider(props) {
     // OF A LIST, WHICH INCLUDES DEALING WITH THE TRANSACTION STACK. THE
     // FUNCTIONS ARE setCurrentList, addMoveItemTransaction, addUpdateItemTransaction,
     // moveItem, updateItem, updateCurrentList, undo, and redo
-    store.setCurrentList = function (id) {
-        async function asyncSetCurrentList(id) {
+    store.setCurrentList = function (id, isPlayingList, isExtendList) {
+        async function asyncSetCurrentList(id, isPlayingList, isExtendList) {
             let response = await api.getPlaylistById(id);
             if (response.data.success) {
                 let playlist = response.data.playlist;
@@ -459,13 +571,17 @@ function GlobalStoreContextProvider(props) {
                 if (response.data.success) {
                     storeReducer({
                         type: GlobalStoreActionType.SET_CURRENT_LIST,
-                        payload: playlist
+                        payload: {
+                            playlist: playlist,
+                            isExtendList: isExtendList,
+                            isPlayingList: isPlayingList
+                        }
                     });
                     // history.push("/playlist/" + playlist._id);
                 }
             }
         }
-        asyncSetCurrentList(id);
+        asyncSetCurrentList(id, isPlayingList, isExtendList);
     }
 
     store.getPlaylistSize = function() {

@@ -82,13 +82,13 @@ export default function AppBanner() {
             <MenuItem onClick={handleLogout}>Logout</MenuItem>
         </Menu>        
 
-    let editToolbar = "";
+    // let editToolbar = "";
     let menu = loggedOutMenu;
     if (auth.loggedIn) {
         menu = loggedInMenu;
-        if (store.currentList) {
-            editToolbar = <EditToolbar />;
-        }
+        // if (store.currentList) {
+        //     editToolbar = <EditToolbar />;
+        // }
     }
     
     function getAccountMenu(loggedIn) {
@@ -113,7 +113,7 @@ export default function AppBanner() {
                 <AppBar position="static" style={{ background: '#e6e6e6' }}>
                     <Toolbar style={{minHeight: '50px', maxHeight: '50px', paddingLeft: '0px'}}>
                         <Link style={{ textDecoration: 'none', color: 'white' }} onClick={handleHomeLink} to='/'><img src={playlisterlogo} style={{width: 150, paddingTop: 5}}></img></Link>
-                        <Box sx={{ flexGrow: 1 }}>{editToolbar}</Box>
+                        <Box sx={{ flexGrow: 1 }}></Box>
                         <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
                             <IconButton
                                 size="large"

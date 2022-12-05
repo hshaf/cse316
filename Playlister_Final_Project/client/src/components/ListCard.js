@@ -8,6 +8,9 @@ import ListItem from '@mui/material/ListItem';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import KeyboardDoubleArrowDownIcon from '@mui/icons-material/KeyboardDoubleArrowDown';
+import KeyboardDoubleArrowUpIcon from '@mui/icons-material/KeyboardDoubleArrowUp';
+import { WorkspaceScreen } from '.';
+import { EditToolbar } from '.';
 
 /*
     This is a card in our list of top 5 lists. It lets select
@@ -33,8 +36,22 @@ function ListCard(props) {
             console.log("load " + event.target.id);
 
             // CHANGE THE CURRENT LIST
-            store.setCurrentList(id);
+            store.setCurrentList(id, true, false);
         }
+    }
+
+    function handleExpandList(event) {
+        event.stopPropagation();
+
+        // CHANGE THE CURRENT LIST
+        store.setCurrentList(playlist._id, store.isPlayingList, true);
+    }
+
+    function handleCloseExpandList(event) {
+        event.stopPropagation();
+
+        // No longer in edit mode
+        store.setCurrentList(playlist._id, store.isPlayingList, false);
     }
 
     function handleToggleEdit(event) {
@@ -91,12 +108,12 @@ function ListCard(props) {
             }}
         >
             <Box style={{width:'100%'}}>
-                <Box sx={{ p: 1, flexGrow: 1 }}>
+                <Box style={{paddingTop:'0px',paddingBottom:'0px'}}sx={{ p: 1, flexGrow: 1 }}>
                     <Typography style={{ fontSize: '16pt', fontFamily: "Calibri, sans-serif", fontWeight:'bold' }}>{playlist.name}</Typography>
                     <Typography><span style={{fontWeight:'bold'}}>By:</span> {playlist.ownerUsername}</Typography>
                 </Box>
                 <Box display="flex" justifyContent="flex-end">
-                    <KeyboardDoubleArrowDownIcon style={{fontSize:'38px'}}></KeyboardDoubleArrowDownIcon>
+                    <IconButton onClick={(event)=>{handleExpandList(event)}} style={{padding:'0px', color:'black' ,marginRight:'15px'}}><KeyboardDoubleArrowDownIcon style={{fontSize:'38px'}}></KeyboardDoubleArrowDownIcon></IconButton>
                 </Box>
             </Box>
             {/* <Box sx={{ p: 1 }}>
@@ -112,7 +129,43 @@ function ListCard(props) {
                 </IconButton>
             </Box> */}
         </ListItem>
-
+    if (store.currentList && store.isExpandedList && playlist._id === store.currentList._id) {
+        cardElement =
+        <ListItem
+            id={playlist._id}
+            key={playlist._id}
+            sx={{ bgcolor:cardbgcolor, marginLeft:'10px', marginTop: '13px', marginBottom:'2px', display: 'flex', p: 1, borderRadius:'15px', outline:'2px solid black', ":hover":{bgcolor:cardbgcolor} }}
+            style={{ height:'475px', width:'100%' }}
+        >
+            <Box style={{width:'100%'}}>
+                <Box style={{paddingTop:'0px',paddingBottom:'0px'}}sx={{ p: 1, flexGrow: 1 }}>
+                    <Typography style={{ fontSize: '16pt', fontFamily: "Calibri, sans-serif", fontWeight:'bold' }}>{playlist.name}</Typography>
+                    <Typography><span style={{fontWeight:'bold'}}>By:</span> {playlist.ownerUsername}</Typography>
+                </Box>
+                <Box id="song-card-selector">
+                    <WorkspaceScreen />
+                </Box>
+                <Box style={{width:'100%'}}>
+                    <EditToolbar />
+                </Box>
+                <Box display="flex" justifyContent="flex-end">
+                    <IconButton onClick={(event)=>{handleCloseExpandList(event)}} style={{padding:'0px', color:'black' ,marginRight:'15px'}}><KeyboardDoubleArrowUpIcon style={{fontSize:'38px'}}></KeyboardDoubleArrowUpIcon></IconButton>
+                </Box>
+            </Box>
+            {/* <Box sx={{ p: 1 }}>
+                <IconButton onClick={handleToggleEdit} aria-label='edit'>
+                    <EditIcon style={{fontSize:'48pt'}} />
+                </IconButton>
+            </Box>
+            <Box sx={{ p: 1 }}>
+                <IconButton onClick={(event) => {
+                        handleDeleteList(event, playlist._id)
+                    }} aria-label='delete'>
+                    <DeleteIcon style={{fontSize:'48pt'}} />
+                </IconButton>
+            </Box> */}
+        </ListItem>
+    }
     if (editActive) {
         cardElement =
             <TextField

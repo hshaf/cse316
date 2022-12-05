@@ -12,6 +12,11 @@ import SearchToolbar from './SearchToolbar';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import PlaylisterYouTubePlayer from './PlaylisterYouTubePlayer';
+import SkipPreviousIcon from '@mui/icons-material/SkipPrevious';
+import SkipNextIcon from '@mui/icons-material/SkipNext';
+import StopIcon from '@mui/icons-material/Stop';
+import PlayArrowIcon from '@mui/icons-material/PlayArrow';
+import IconButton from '@mui/material/IconButton';
 /*
     This React component lists all the top5 lists in the UI.
     
@@ -64,7 +69,7 @@ const HomeScreen = () => {
     let songs = [];
     let youtubeplayer = null;
 
-    if (store.currentList) {
+    if (store.currentList && store.isPlayingList) {
         songs = store.currentList.songs;
         // Get YouTube IDs
         songs = songs.map((song) => (song.youTubeId))
@@ -90,8 +95,24 @@ const HomeScreen = () => {
                     <Box bgcolor='black' id="youtube-player">
                         {youtubeplayer}
                     </Box>
-                    <Box display="flex" justifyContent="center" style={{borderRadius:'10px'}} bgcolor='#C4BEEE' id="player-info-and-buttons">
-                        <Typography>Now Playing</Typography>
+                    <Box style={{borderRadius:'10px'}} bgcolor='#C4BEEE' id="player-info-and-buttons">
+                        <Box display="flex" justifyContent="center">
+                            <Typography fontWeight='bold'>Now Playing</Typography>
+                        </Box>
+                        <Box marginLeft='10px'>
+                            <Typography id="current-playlist-text" fontSize='14px' fontWeight='bold'>Playlist:</Typography>
+                            <Typography id="current-song-text" fontSize='14px' fontWeight='bold'>Song #:</Typography>
+                            <Typography id="current-song-title-text" fontSize='14px' fontWeight='bold'>Title:</Typography>
+                            <Typography id="current-song-artist-text" fontSize='14px' fontWeight='bold'>Artist:</Typography>
+                        </Box>
+                        <Box display="flex" justifyContent="center">
+                            <Box display="flex" justifyContent="center" style={{minWidth:'350px',maxWidth:'350px',minHeight:'30px',maxHeight:'30px',border:'2px solid black',borderRadius:'10px'}} bgcolor='#F6F6E6'>
+                                <IconButton><SkipPreviousIcon style={{color:'black', fontSize:'28px'}}></SkipPreviousIcon></IconButton>
+                                <IconButton><StopIcon style={{color:'black', fontSize:'28px'}}></StopIcon></IconButton>
+                                <IconButton><PlayArrowIcon style={{color:'black', fontSize:'28px'}}></PlayArrowIcon></IconButton>
+                                <IconButton><SkipNextIcon style={{color:'black', fontSize:'28px'}}></SkipNextIcon></IconButton>
+                            </Box>
+                        </Box>
                     </Box>
                 </div>
             </Box>
