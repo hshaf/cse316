@@ -89,6 +89,8 @@ body {
   /* outline: 2px solid black; */
   height: 65vh;
   /* overflow: auto; */
+  display: flex;
+  /* flex-direction: column; */
 }
 
 #user-initials {
@@ -153,6 +155,21 @@ body {
   width: 58%;
   /* outline: 2px solid black; */
   /* background-color: var(--swatch-primary); */
+}
+
+#player-and-list-comments {
+  /* outline: 2px solid black; */
+  width: 42%;
+  margin-right: 10px;
+}
+
+#youtube-player {
+  min-height: 40vh;
+}
+
+#player-info-and-buttons {
+  min-height: 20vh;
+  outline: 2px solid black;
 }
 
 #playlister-workspace {

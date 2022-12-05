@@ -76,11 +76,14 @@ function ListCard(props) {
     if (store.isListNameEditActive) {
         cardStatus = true;
     }
+    let cardbgcolor = '#F6F6E6';
+    if (selected) 
+        cardbgcolor = '#DAB810';
     let cardElement =
         <ListItem
             id={playlist._id}
             key={playlist._id}
-            sx={{ bgcolor:'#eeeedd', marginLeft:'10px', marginTop: '13px', marginBottom:'2px', display: 'flex', p: 1, borderRadius:'15px', outline:'2px solid black', ":hover":{bgcolor:'#eeeedd'} }}
+            sx={{ bgcolor:cardbgcolor, marginLeft:'10px', marginTop: '13px', marginBottom:'2px', display: 'flex', p: 1, borderRadius:'15px', outline:'2px solid black', ":hover":{bgcolor:cardbgcolor} }}
             style={{ height:'100px', width:'100%' }}
             button
             onClick={(event) => {

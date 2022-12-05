@@ -14,6 +14,7 @@ import Statusbar from './Statusbar'
 import WorkspaceScreen from './WorkspaceScreen'
 import MUIAccountErrorModal from './MUIAccountErrorModal'
 import SearchToolbar from './SearchToolbar'
+import PlaylisterYouTubePlayer from './PlaylisterYouTubePlayer'
 /*
     This serves as a module so that we can import
     all the other components as we wish.
@@ -36,4 +37,5 @@ export {
     Statusbar, 
     WorkspaceScreen,
     SearchToolbar,
+    PlaylisterYouTubePlayer,
     MUIAccountErrorModal }
