@@ -79,12 +79,12 @@ function ListCard(props) {
 
     function handleLike(event) {
         event.stopPropagation();
-        
+        store.likeList(playlist._id);
     }
 
     function handleDislike(event) {
         event.stopPropagation();
-        
+        store.dislikeList(playlist._id);
     }
 
     function handleToggleEdit(event) {
@@ -254,10 +254,10 @@ function ListCard(props) {
                         <Typography><span style={{fontWeight:'bold'}}>By:</span> {playlist.ownerUsername}</Typography>
                     </Box>
                     <Box display="flex" justifyContent='center' alignItems='center' style={{marginRight:'50px'}}>
-                        <ThumbUpAltOutlinedIcon style={{fontSize:'35px', paddingRight:'10px'}}></ThumbUpAltOutlinedIcon>
-                        <Typography>{playlist.likes.length}</Typography>
-                        <ThumbDownAltOutlinedIcon style={{fontSize:'35px', paddingLeft:'30px', paddingRight:'10px'}}></ThumbDownAltOutlinedIcon>
-                        <Typography>{playlist.dislikes.length}</Typography>
+                        <IconButton onClick={(event)=>{handleLike(event)}}><ThumbUpAltOutlinedIcon style={{fontSize:'35px'}}></ThumbUpAltOutlinedIcon></IconButton>
+                        <Typography style={{paddingRight:'15px'}}>{playlist.likes.length}</Typography>
+                        <IconButton onClick={(event)=>{handleDislike(event)}}><ThumbDownAltOutlinedIcon style={{fontSize:'35px'}}></ThumbDownAltOutlinedIcon></IconButton>
+                        <Typography style={{paddingRight:'15px'}}>{playlist.dislikes.length}</Typography>
                     </Box>
                 </Box>
                 <Box id="song-card-selector">

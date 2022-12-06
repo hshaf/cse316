@@ -35,6 +35,7 @@ export const GlobalStoreActionType = {
     SET_LIST_NAME_EDIT_ACTIVE: "SET_LIST_NAME_EDIT_ACTIVE",
     PUBLISH_LIST: "PUBLISH_LIST",
     SET_CURRENT_LIST_AFTER_SELECT: "SET_CURRENT_LIST_AFTER_SELECT",
+    LIKE_LIST: "LIKE_LIST",
     EDIT_SONG: "EDIT_SONG",
     RESET_STORE: "RESET_STORE",
     REMOVE_SONG: "REMOVE_SONG",
@@ -259,6 +260,22 @@ function GlobalStoreContextProvider(props) {
                     currentList: payload.playlist,
                     isExpandedList: payload.isExtendList,
                     isPlayingList: payload.isPlayingList,
+                    currentSongIndex: -1,
+                    currentSong: null,
+                    newListCounter: store.newListCounter,
+                    listNameActive: false,
+                    listIdMarkedForDeletion: null,
+                    listMarkedForDeletion: null
+                });
+            }
+            case GlobalStoreActionType.LIKE_LIST: {
+                return setStore({
+                    currentModal : CurrentModal.NONE,
+                    idNamePairs: store.idNamePairs,
+                    userPlaylists: payload,
+                    currentList: store.currentList,
+                    isExpandedList: store.isExpandedList,
+                    isPlayingList: store.isPlayingList,
                     currentSongIndex: -1,
                     currentSong: null,
                     newListCounter: store.newListCounter,
@@ -858,6 +875,118 @@ function GlobalStoreContextProvider(props) {
             }
         }
         asyncSetCurrentList(id, isPlayingList, isExtendList);
+    }
+
+    store.likeList = function (id) {
+        async function asyncSetCurrentList(id) {
+            let response = await api.getPlaylistById(id);
+            if (response.data.success) {
+                let playlist = response.data.playlist;
+
+                let username = auth.user.username;
+                // Check if user has disliked this list before
+                let hasDisliked = false;
+
+                for (let i = 0; i < playlist.dislikes.length; i++) {
+                    if (username === playlist.dislikes[i]) {
+                        hasDisliked = true;
+                    }
+                }
+
+                if (hasDisliked) {
+                    console.log('user already disliked this list, returning without liking')
+                    return;
+                }
+
+                // Check if user has already liked this list before
+                // If so then decrement the like count, otherwise increment
+                var index = playlist.likes.indexOf(username);
+                if (index !== -1) {
+                    playlist.likes.splice(index, 1);
+                    console.log('user has already liked list, unliking list')
+                }
+                else {
+                    playlist.likes.push(username);
+                    console.log('user liked list')
+                }
+
+                response = await api.updatePlaylistById(playlist._id, playlist);
+                if (response.data.success) {
+                    async function asyncLoadUserPlaylists() {
+                        const response = await api.getPlaylists();
+                        if (response.data.success) {
+                            let playlists = response.data.data;
+                            storeReducer({
+                                type: GlobalStoreActionType.LIKE_LIST,
+                                payload: playlists
+                            });
+                        }
+                        else {
+                            console.log("API FAILED TO GET THE USER'S PLAYLISTS");
+                        }
+                    }
+                    asyncLoadUserPlaylists();
+                    // history.push("/playlist/" + playlist._id);
+                }
+            }
+        }
+        asyncSetCurrentList(id);
+    }
+
+    store.dislikeList = function (id) {
+        async function asyncSetCurrentList(id) {
+            let response = await api.getPlaylistById(id);
+            if (response.data.success) {
+                let playlist = response.data.playlist;
+
+                let username = auth.user.username;
+                // Check if user has liked this list before
+                let hasLiked = false;
+
+                for (let i = 0; i < playlist.likes.length; i++) {
+                    if (username === playlist.likes[i]) {
+                        hasLiked = true;
+                    }
+                }
+
+                if (hasLiked) {
+                    console.log('user already liked this list, returning without disliking')
+                    return;
+                }
+
+                // Check if user has already disliked this list before
+                // If so then decrement the dislike count, otherwise increment
+                var index = playlist.dislikes.indexOf(username);
+                if (index !== -1) {
+                    playlist.dislikes.splice(index, 1);
+                    console.log('user has already disliked list, undisliking list')
+                }
+                else {
+                    playlist.dislikes.push(username);
+                    console.log('user disliked list')
+                }
+
+                response = await api.updatePlaylistById(playlist._id, playlist);
+                if (response.data.success) {
+                    async function asyncLoadUserPlaylists() {
+                        const response = await api.getPlaylists();
+                        if (response.data.success) {
+                            let playlists = response.data.data;
+                            storeReducer({
+                                type: GlobalStoreActionType.LIKE_LIST,
+                                payload: playlists
+                            });
+                        }
+                        else {
+                            console.log("API FAILED TO GET THE USER'S PLAYLISTS");
+                        }
+                    }
+                    asyncLoadUserPlaylists();
+                    // history.push("/playlist/" + playlist._id);
+                }
+            }
+        }
+        asyncSetCurrentList(id);
     }
 
     store.getPlaylistSize = function() {
