@@ -40,6 +40,15 @@ function ListCard(props) {
         }
     }
 
+    function handleClick(event, id) {
+        if (event.detail === 1) {
+            handleLoadList(event, id);
+        }
+        else if (event.detail === 2) {
+            handleToggleEdit(event);
+        }
+    }
+
     function handleExpandList(event) {
         event.stopPropagation();
         store.clearTransactions();
@@ -111,7 +120,8 @@ function ListCard(props) {
             style={{ height:'100px', width:'100%' }}
             button
             onClick={(event) => {
-                handleLoadList(event, playlist._id)
+                handleClick(event, playlist._id)
+                // handleLoadList(event, playlist._id)
             }}
         >
             <Box style={{width:'100%'}}>
@@ -176,23 +186,49 @@ function ListCard(props) {
         </ListItem>
     }
     if (editActive) {
+        // cardElement =
+        //     <TextField
+        //         margin="normal"
+        //         required
+        //         fullWidth
+        //         id={"list-" + playlist._id}
+        //         label="Playlist Name"
+        //         name="name"
+        //         autoComplete="Playlist Name"
+        //         className='list-card'
+        //         onKeyPress={handleKeyPress}
+        //         onChange={handleUpdateText}
+        //         defaultValue={playlist.name}
+        //         inputProps={{style: {fontSize: 48}}}
+        //         InputLabelProps={{style: {fontSize: 24}}}
+        //         autoFocus
+        //     />
         cardElement =
+        <ListItem
+            id={playlist._id}
+            key={playlist._id}
+            sx={{ bgcolor:cardbgcolor, marginLeft:'10px', marginTop: '13px', marginBottom:'2px', display: 'flex', p: 1, borderRadius:'15px', outline:'2px solid black', ":hover":{bgcolor:cardbgcolor} }}
+            style={{ height:'100px', width:'100%' }}
+        >
             <TextField
-                margin="normal"
+                // margin="normal"
                 required
                 fullWidth
                 id={"list-" + playlist._id}
                 label="Playlist Name"
                 name="name"
                 autoComplete="Playlist Name"
-                className='list-card'
+                // className='list-card'
                 onKeyPress={handleKeyPress}
                 onChange={handleUpdateText}
                 defaultValue={playlist.name}
-                inputProps={{style: {fontSize: 48}}}
-                InputLabelProps={{style: {fontSize: 24}}}
+                inputProps={{style: {fontSize: 30}}}
+                InputLabelProps={{style: {fontSize: 18}}}
                 autoFocus
+                onBlur={toggleEdit}
             />
+            {/* <Box>yo</Box> */}
+        </ListItem>
     }
     return (
         cardElement

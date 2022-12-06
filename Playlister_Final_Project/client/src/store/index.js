@@ -34,6 +34,7 @@ export const GlobalStoreActionType = {
     SET_CURRENT_LIST: "SET_CURRENT_LIST",
     SET_LIST_NAME_EDIT_ACTIVE: "SET_LIST_NAME_EDIT_ACTIVE",
     EDIT_SONG: "EDIT_SONG",
+    RESET_STORE: "RESET_STORE",
     REMOVE_SONG: "REMOVE_SONG",
     HIDE_MODALS: "HIDE_MODALS"
 }
@@ -83,11 +84,11 @@ function GlobalStoreContextProvider(props) {
             case GlobalStoreActionType.CHANGE_LIST_NAME: {
                 return setStore({
                     currentModal : CurrentModal.NONE,
-                    idNamePairs: payload.idNamePairs,
-                    userPlaylists: store.userPlaylists,
-                    currentList: payload.playlist,
-                    isExpandedList: store.isExpandedList,
-                    isPlayingList: store.isPlayingList,
+                    idNamePairs: store.idNamePairs,
+                    userPlaylists: payload.playlists,
+                    currentList: null,
+                    isExpandedList: false,
+                    isPlayingList: false,
                     currentSongIndex: -1,
                     currentSong: null,
                     newListCounter: store.newListCounter,
@@ -108,6 +109,23 @@ function GlobalStoreContextProvider(props) {
                     currentSongIndex: -1,
                     currentSong: null,
                     newListCounter: store.newListCounter,
+                    listNameActive: false,
+                    listIdMarkedForDeletion: null,
+                    listMarkedForDeletion: null
+                })
+            }
+            // Reset store values
+            case GlobalStoreActionType.RESET_STORE: {
+                return setStore({
+                    currentModal : CurrentModal.NONE,
+                    idNamePairs: [],
+                    userPlaylists: [],
+                    currentList: null,
+                    isExpandedList: false,
+                    isPlayingList: false,
+                    currentSongIndex : -1,
+                    currentSong : null,
+                    newListCounter: 0,
                     listNameActive: false,
                     listIdMarkedForDeletion: null,
                     listMarkedForDeletion: null
@@ -347,26 +365,47 @@ function GlobalStoreContextProvider(props) {
             let response = await api.getPlaylistById(id);
             if (response.data.success) {
                 let playlist = response.data.playlist;
+                if (newName.length === 0) {
+                    newName = playlist.name;
+                }
                 playlist.name = newName;
                 async function updateList(playlist) {
                     response = await api.updatePlaylistById(playlist._id, playlist);
                     if (response.data.success) {
-                        async function getListPairs(playlist) {
-                            response = await api.getPlaylistPairs();
+                        async function asyncLoadUserPlaylists(playlist) {
+                            const response = await api.getPlaylists();
                             if (response.data.success) {
-                                let pairsArray = response.data.idNamePairs;
+                                let playlists = response.data.data;
                                 storeReducer({
                                     type: GlobalStoreActionType.CHANGE_LIST_NAME,
                                     payload: {
-                                        idNamePairs: pairsArray,
-                                        playlist: playlist
+                                        playlist: playlist,
+                                        playlists: playlists
                                     }
                                 });
-                                history.push("/playlist/" + playlist._id);
+                            }
+                            else {
+                                console.log("API FAILED TO GET THE USER'S PLAYLISTS");
                             }
                         }
-                        getListPairs(playlist);
+                        asyncLoadUserPlaylists(playlist);
                     }
+                        // async function getListPairs(playlist) {
+                        //     response = await api.getPlaylistPairs();
+                        //     if (response.data.success) {
+                        //         let pairsArray = response.data.idNamePairs;
+                        //         storeReducer({
+                        //             type: GlobalStoreActionType.CHANGE_LIST_NAME,
+                        //             payload: {
+                        //                 idNamePairs: pairsArray,
+                        //                 playlist: playlist
+                        //             }
+                        //         });
+                        //         // history.push("/playlist/" + playlist._id);
+                        //     }
+                        // }
+                        // getListPairs(playlist);
+                    
                 }
                 updateList(playlist);
             }
@@ -396,6 +435,12 @@ function GlobalStoreContextProvider(props) {
         storeReducer({
             type: GlobalStoreActionType.SET_IS_PLAYING_LIST,
             payload: false
+        });
+    }
+
+    store.resetStore = function () {
+        storeReducer({
+            type: GlobalStoreActionType.RESET_STORE
         });
     }
 
