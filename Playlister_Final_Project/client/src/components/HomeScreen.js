@@ -85,6 +85,31 @@ const HomeScreen = () => {
         currentSongText = <Typography id="current-song-text" fontSize='14px' fontWeight='bold'></Typography>
         currentSongTitleText = <Typography id="current-song-title-text" fontSize='14px' fontWeight='bold'></Typography>
         currentSongArtistText = <Typography id="current-song-artist-text" fontSize='14px' fontWeight='bold'></Typography>
+        youtubeplayer =
+        <Box>
+            <Box bgcolor='black' id="youtube-player">
+
+            </Box>
+            <Box style={{borderRadius:'10px'}} bgcolor='#C4BEEE' id="player-info-and-buttons">
+                <Box display="flex" justifyContent="center">
+                    <Typography fontWeight='bold'>Now Playing</Typography>
+                </Box>
+                <Box style={{minHeight:'85px', maxHeight:'85px'}} marginLeft='10px'>
+                    {currrentPlaylistText}
+                    {currentSongText}
+                    {currentSongTitleText}
+                    {currentSongArtistText}
+                </Box>
+                <Box display="flex" justifyContent="center">
+                    <Box display="flex" justifyContent="center" style={{minWidth:'350px',maxWidth:'350px',minHeight:'30px',maxHeight:'30px',border:'2px solid black',borderRadius:'10px'}} bgcolor='#F6F6E6'>
+                        <IconButton><SkipPreviousIcon style={{color:'black', fontSize:'28px'}}></SkipPreviousIcon></IconButton>
+                        <IconButton><StopIcon style={{color:'black', fontSize:'28px'}}></StopIcon></IconButton>
+                        <IconButton><PlayArrowIcon style={{color:'black', fontSize:'28px'}}></PlayArrowIcon></IconButton>
+                        <IconButton><SkipNextIcon style={{color:'black', fontSize:'28px'}}></SkipNextIcon></IconButton>
+                    </Box>
+                </Box>
+            </Box>
+        </Box>;
     }
 
     return (
@@ -101,9 +126,12 @@ const HomeScreen = () => {
                 </div>
                 <div id="player-and-list-comments">
                     <Box id="player-comments-tabs">
-                        <Button style={{fontWeight:'bold', color:'black', outline:'2px solid black', width:'125px'}}>Player</Button><Button style={{fontWeight:'bold', color:'black', outline:'2px solid black', width:'125px'}}>Comments</Button>
+                        <Button variant='contained' style={{fontWeight:'bold', color:'black', width:'125px'}}>Player</Button>
+                        <Button variant='contained' style={{fontWeight:'bold', color:'black', width:'125px'}}>Comments</Button>
                     </Box>
-                    <Box bgcolor='black' id="youtube-player">
+                    {/* <PlaylisterYouTubePlayer songs={songs} /> */}
+                    {youtubeplayer}
+                    {/* <Box bgcolor='black' id="youtube-player">
                         {youtubeplayer}
                     </Box>
                     <Box style={{borderRadius:'10px'}} bgcolor='#C4BEEE' id="player-info-and-buttons">
@@ -124,7 +152,7 @@ const HomeScreen = () => {
                                 <IconButton><SkipNextIcon style={{color:'black', fontSize:'28px'}}></SkipNextIcon></IconButton>
                             </Box>
                         </Box>
-                    </Box>
+                    </Box> */}
                 </div>
             </Box>
             <Statusbar />
