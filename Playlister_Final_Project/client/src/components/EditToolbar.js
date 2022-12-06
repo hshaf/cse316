@@ -39,7 +39,7 @@ function EditToolbar() {
         store.closeCurrentList();
     }
     function handlePublish() {
-        
+        store.publishList();
     }
     async function handleDeleteList(event) {
         event.stopPropagation();
@@ -48,7 +48,7 @@ function EditToolbar() {
         }
     }
     function handleDuplicate() {
-        
+        store.duplicateList();
     }
     return (
         <Box id="edit-toolbar">
@@ -91,7 +91,7 @@ function EditToolbar() {
             </Box>
             <Box style={{float:'right'}}>
                 <Button 
-                    disabled={isModalOpen || !store.currentList}
+                    disabled={!store.isListPublished() || isModalOpen || !store.currentList}
                     id='publish-button'
                     onClick={handlePublish}
                     className={publishClass}

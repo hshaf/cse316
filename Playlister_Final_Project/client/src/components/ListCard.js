@@ -109,9 +109,16 @@ function ListCard(props) {
     if (store.isListNameEditActive) {
         cardStatus = true;
     }
+    // Color for cards that haven't been published
     let cardbgcolor = '#F6F6E6';
-    if (selected) 
+    if (playlist.isPublished) {
+        // Color for cards that have been published
+        cardbgcolor = '#C4BEEE';
+    }
+    if (selected) {
+        // Color for cards that are selected
         cardbgcolor = '#DAB810';
+    }
     let cardElement =
         <ListItem
             id={playlist._id}
@@ -133,18 +140,6 @@ function ListCard(props) {
                     <IconButton onClick={(event)=>{handleExpandList(event)}} style={{padding:'0px', color:'black' ,marginRight:'15px'}}><KeyboardDoubleArrowDownIcon style={{fontSize:'38px'}}></KeyboardDoubleArrowDownIcon></IconButton>
                 </Box>
             </Box>
-            {/* <Box sx={{ p: 1 }}>
-                <IconButton onClick={handleToggleEdit} aria-label='edit'>
-                    <EditIcon style={{fontSize:'48pt'}} />
-                </IconButton>
-            </Box>
-            <Box sx={{ p: 1 }}>
-                <IconButton onClick={(event) => {
-                        handleDeleteList(event, playlist._id)
-                    }} aria-label='delete'>
-                    <DeleteIcon style={{fontSize:'48pt'}} />
-                </IconButton>
-            </Box> */}
         </ListItem>
     if (store.currentList && store.isExpandedList && playlist._id === store.currentList._id) {
         cardElement =
@@ -171,38 +166,9 @@ function ListCard(props) {
                     </Box>
                 </Box>
             </Box>
-            {/* <Box sx={{ p: 1 }}>
-                <IconButton onClick={handleToggleEdit} aria-label='edit'>
-                    <EditIcon style={{fontSize:'48pt'}} />
-                </IconButton>
-            </Box>
-            <Box sx={{ p: 1 }}>
-                <IconButton onClick={(event) => {
-                        handleDeleteList(event, playlist._id)
-                    }} aria-label='delete'>
-                    <DeleteIcon style={{fontSize:'48pt'}} />
-                </IconButton>
-            </Box> */}
         </ListItem>
     }
     if (editActive) {
-        // cardElement =
-        //     <TextField
-        //         margin="normal"
-        //         required
-        //         fullWidth
-        //         id={"list-" + playlist._id}
-        //         label="Playlist Name"
-        //         name="name"
-        //         autoComplete="Playlist Name"
-        //         className='list-card'
-        //         onKeyPress={handleKeyPress}
-        //         onChange={handleUpdateText}
-        //         defaultValue={playlist.name}
-        //         inputProps={{style: {fontSize: 48}}}
-        //         InputLabelProps={{style: {fontSize: 24}}}
-        //         autoFocus
-        //     />
         cardElement =
         <ListItem
             id={playlist._id}
@@ -227,7 +193,6 @@ function ListCard(props) {
                 autoFocus
                 onBlur={toggleEdit}
             />
-            {/* <Box>yo</Box> */}
         </ListItem>
     }
     return (

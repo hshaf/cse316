@@ -33,6 +33,7 @@ export const GlobalStoreActionType = {
     MARK_LIST_FOR_DELETION: "MARK_LIST_FOR_DELETION",
     SET_CURRENT_LIST: "SET_CURRENT_LIST",
     SET_LIST_NAME_EDIT_ACTIVE: "SET_LIST_NAME_EDIT_ACTIVE",
+    PUBLISH_LIST: "PUBLISH_LIST",
     EDIT_SONG: "EDIT_SONG",
     RESET_STORE: "RESET_STORE",
     REMOVE_SONG: "REMOVE_SONG",
@@ -249,6 +250,23 @@ function GlobalStoreContextProvider(props) {
                     listMarkedForDeletion: null
                 });
             }
+            // Publish a list
+            case GlobalStoreActionType.PUBLISH_LIST: {
+                return setStore({
+                    currentModal : CurrentModal.NONE,
+                    idNamePairs: store.idNamePairs,
+                    userPlaylists: payload.playlists,
+                    currentList: payload.playlist,
+                    isExpandedList: payload.isExtendList,
+                    isPlayingList: payload.isPlayingList,
+                    currentSongIndex: -1,
+                    currentSong: null,
+                    newListCounter: store.newListCounter,
+                    listNameActive: false,
+                    listIdMarkedForDeletion: null,
+                    listMarkedForDeletion: null
+                });
+            }
             // For expanding lists
             case GlobalStoreActionType.SET_IS_EXPANDED_LIST: {
                 return setStore({
@@ -423,12 +441,113 @@ function GlobalStoreContextProvider(props) {
         // history.push("/");
     }
 
+    // Function for publishing a list
+    store.publishList = function () {
+        if (store.currentList) {
+            store.currentList.isPublished = true;
+            let date = new Date();
+            // store.currentList.publishDate = date.toLocaleDateString("en-US");
+            store.currentList.publishDate = date;
+            // console.log(date);
+            
+            // Update list and get updated user lists
+
+            async function asyncUpdateCurrentList() {
+                const response = await api.updatePlaylistById(store.currentList._id, store.currentList);
+                if (response.data.success) {
+                    // storeReducer({
+                    //     type: GlobalStoreActionType.PUBLISH_LIST,
+                    //     payload: {
+                    //         playlist: store.currentList,
+                    //         isPlayingList: store.isPlayingList,
+                    //         isExtendList: store.isExpandedList
+                    //     }
+                    // });
+                    async function asyncLoadUserPlaylists() {
+                        const response = await api.getPlaylists();
+                        if (response.data.success) {
+                            let playlists = response.data.data;
+                            storeReducer({
+                                type: GlobalStoreActionType.PUBLISH_LIST,
+                                payload: {
+                                    playlists: playlists,
+                                    playlist: store.currentList,
+                                    isPlayingList: store.isPlayingList,
+                                    isExtendList: store.isExpandedList
+                                }
+                            });
+                        }
+                        else {
+                            console.log("API FAILED TO GET THE USER'S PLAYLISTS");
+                        }
+                    }
+                    asyncLoadUserPlaylists();
+                }
+            }
+            asyncUpdateCurrentList();
+
+            // End
+        }
+    }
+
+    // Function for duplicating a playlist
+    store.duplicateList = async function () {
+        // let newListName = "Untitled" + store.newListCounter;
+        // Parameter list is: (newListName, newSongs, userEmail, username, isPublished, publishDate, likes, dislikes, listens, comments)
+        const response = await api.createPlaylist(store.currentList.name, store.currentList.songs, auth.user.email, auth.user.username, false, "No publish date", [], [], 0, []);
+        console.log("createNewList response: " + response);
+        if (response.status === 201) {
+            tps.clearAllTransactions();
+            let newList = response.data.playlist;
+            // storeReducer({
+            //     type: GlobalStoreActionType.CREATE_NEW_LIST,
+            //     payload: newList
+            // }
+            // );
+            /* LOAD USER LISTS */
+
+            async function asyncLoadUserPlaylists(newList) {
+                const response = await api.getPlaylists();
+                if (response.data.success) {
+                    let playlists = response.data.data;
+                    storeReducer({
+                        type: GlobalStoreActionType.CREATE_NEW_LIST,
+                        payload: {
+                            playlists: playlists,
+                            newList: newList
+                        }
+                    });
+                }
+                else {
+                    console.log("API FAILED TO GET THE USER'S PLAYLISTS");
+                }
+            }
+            asyncLoadUserPlaylists(newList);
+
+            /* LOAD USER LISTS */
+            
+            // store.loadUserPlaylists();
+
+            // IF IT'S A VALID LIST THEN LET'S START EDITING IT
+            // history.push("/playlist/" + newList._id);
+        }
+        else {
+            console.log("API FAILED TO CREATE A NEW LIST");
+        }
+    }
+
     store.playList = function (id) {
         store.setCurrentList(id);
         storeReducer({
             type: GlobalStoreActionType.SET_IS_PLAYING_LIST,
             payload: true
         });
+    }
+
+    store.isListPublished = function () {
+        if (store.currentList) {
+            return store.currentList.isPublished !== true;
+        }
     }
 
     store.stopPlayingList = function () {
@@ -471,7 +590,8 @@ function GlobalStoreContextProvider(props) {
     // THIS FUNCTION CREATES A NEW LIST
     store.createNewList = async function () {
         let newListName = "Untitled" + store.newListCounter;
-        const response = await api.createPlaylist(newListName, [], auth.user.email, auth.user.username);
+        // Parameter list is: (newListName, newSongs, userEmail, username, isPublished, publishDate, likes, dislikes, listens, comments)
+        const response = await api.createPlaylist(newListName, [], auth.user.email, auth.user.username, false, "No publish date", [], [], 0, []);
         console.log("createNewList response: " + response);
         if (response.status === 201) {
             tps.clearAllTransactions();
