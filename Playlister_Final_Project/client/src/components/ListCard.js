@@ -9,8 +9,12 @@ import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import KeyboardDoubleArrowDownIcon from '@mui/icons-material/KeyboardDoubleArrowDown';
 import KeyboardDoubleArrowUpIcon from '@mui/icons-material/KeyboardDoubleArrowUp';
+import ThumbUpAltOutlinedIcon from '@mui/icons-material/ThumbUpAltOutlined';
+import ThumbDownAltOutlinedIcon from '@mui/icons-material/ThumbDownAltOutlined';
 import { WorkspaceScreen } from '.';
 import { EditToolbar } from '.';
+import { PublishToolbar } from '.';
+import { PublishWorkspaceScreen } from '.';
 
 /*
     This is a card in our list of top 5 lists. It lets select
@@ -36,7 +40,8 @@ function ListCard(props) {
             console.log("load " + event.target.id);
 
             // CHANGE THE CURRENT LIST
-            store.setCurrentList(id, true, false);
+            // store.setCurrentList(id, true, false);
+            store.setCurrentListAndIncrement(id, true, false);
         }
     }
 
@@ -45,7 +50,9 @@ function ListCard(props) {
             handleLoadList(event, id);
         }
         else if (event.detail === 2) {
-            handleToggleEdit(event);
+            if (!store.currentList.isPublished) {
+                handleToggleEdit(event);
+            }
         }
     }
 
@@ -68,6 +75,16 @@ function ListCard(props) {
 
         // No longer in edit mode
         store.setCurrentList(playlist._id, store.isPlayingList, false);
+    }
+
+    function handleLike(event) {
+        event.stopPropagation();
+        
+    }
+
+    function handleDislike(event) {
+        event.stopPropagation();
+        
     }
 
     function handleToggleEdit(event) {
@@ -119,6 +136,18 @@ function ListCard(props) {
         // Color for cards that are selected
         cardbgcolor = '#DAB810';
     }
+    const monthNames = ["January", "February", "March", "April", "May", "June",
+  "July", "August", "September", "October", "November", "December"];
+    let monthPublished = "";
+    let dayPublished = "";
+    let yearPublished = "";
+
+    if (playlist.datePublished !== "No publish date") {
+        const D = new Date(playlist.publishDate);
+        monthPublished = monthNames[D.getMonth()];
+        dayPublished = D.getDate();
+        yearPublished = D.getFullYear();
+    }
     let cardElement =
         <ListItem
             id={playlist._id}
@@ -141,7 +170,49 @@ function ListCard(props) {
                 </Box>
             </Box>
         </ListItem>
-    if (store.currentList && store.isExpandedList && playlist._id === store.currentList._id) {
+    if (playlist.isPublished) {
+        cardElement =
+        <ListItem
+            id={playlist._id}
+            key={playlist._id}
+            sx={{ bgcolor:cardbgcolor, marginLeft:'10px', marginTop: '13px', marginBottom:'2px', display: 'flex', p: 1, borderRadius:'15px', outline:'2px solid black', ":hover":{bgcolor:cardbgcolor} }}
+            style={{ height:'100px', width:'100%' }}
+            button
+            onClick={(event) => {
+                handleClick(event, playlist._id)
+                // handleLoadList(event, playlist._id)
+            }}
+        >
+            <Box style={{width:'100%'}}>
+                <Box display="flex">
+                    <Box style={{paddingTop:'0px',paddingBottom:'0px'}}sx={{ p: 1, flexGrow: 1 }}>
+                        <Typography style={{ fontSize: '16pt', fontFamily: "Calibri, sans-serif", fontWeight:'bold' }}>{playlist.name}</Typography>
+                        <Typography><span style={{fontWeight:'bold'}}>By:</span> {playlist.ownerUsername}</Typography>
+                    </Box>
+                    <Box display="flex" justifyContent='center' alignItems='center' style={{marginRight:'50px'}}>
+                        <IconButton onClick={(event)=>{handleLike(event)}}><ThumbUpAltOutlinedIcon style={{fontSize:'35px'}}></ThumbUpAltOutlinedIcon></IconButton>
+                        <Typography style={{paddingRight:'15px'}}>{playlist.likes.length}</Typography>
+                        <IconButton onClick={(event)=>{handleDislike(event)}}><ThumbDownAltOutlinedIcon style={{fontSize:'35px'}}></ThumbDownAltOutlinedIcon></IconButton>
+                        <Typography style={{paddingRight:'15px'}}>{playlist.dislikes.length}</Typography>
+                    </Box>
+                </Box>
+                <Box display="flex">
+                    <Box style={{paddingTop:'0px',paddingBottom:'0px'}}sx={{ p: 1, flexGrow: 1 }}>
+                        <Typography style={{paddingTop:'10px',fontSize:'12px',color:'green'}}><span style={{color:'black',fontWeight:'bold'}}>Published:</span> {monthPublished} {dayPublished}, {yearPublished}</Typography>
+                    </Box>
+                    <Box display="flex">
+                        <Box>
+                            <Typography style={{marginRight:'80px', paddingTop:'10px',fontSize:'12px',color:'red'}}><span style={{color:'black',fontWeight:'bold'}}>Listens:</span> {playlist.listens}</Typography>
+                        </Box>
+                        <Box>
+                            <IconButton onClick={(event)=>{handleExpandList(event)}} style={{padding:'0px', color:'black' ,marginRight:'15px'}}><KeyboardDoubleArrowDownIcon style={{fontSize:'38px'}}></KeyboardDoubleArrowDownIcon></IconButton>
+                        </Box>
+                    </Box>
+                </Box>
+            </Box>
+        </ListItem>
+    }
+    if (store.currentList && store.isExpandedList && playlist._id === store.currentList._id && !playlist.isPublished) {
         cardElement =
         <ListItem
             id={playlist._id}
@@ -163,6 +234,54 @@ function ListCard(props) {
                     </Box>
                     <Box display="flex" justifyContent="flex-end">
                         <IconButton onClick={(event)=>{handleCloseExpandList(event)}} style={{padding:'0px', color:'black' ,marginRight:'15px'}}><KeyboardDoubleArrowUpIcon style={{fontSize:'38px'}}></KeyboardDoubleArrowUpIcon></IconButton>
+                    </Box>
+                </Box>
+            </Box>
+        </ListItem>
+    }
+    if (store.currentList && store.isExpandedList && playlist._id === store.currentList._id && playlist.isPublished) {
+        cardElement =
+        <ListItem
+            id={playlist._id}
+            key={playlist._id}
+            sx={{ bgcolor:cardbgcolor, marginLeft:'10px', marginTop: '13px', marginBottom:'2px', display: 'flex', p: 1, borderRadius:'15px', outline:'2px solid black', ":hover":{bgcolor:cardbgcolor} }}
+            style={{ height:'475px', width:'100%' }}
+        >
+            <Box style={{width:'100%'}}>
+                <Box display="flex">
+                    <Box style={{paddingTop:'0px',paddingBottom:'0px'}}sx={{ p: 1, flexGrow: 1 }}>
+                        <Typography style={{ fontSize: '16pt', fontFamily: "Calibri, sans-serif", fontWeight:'bold' }}>{playlist.name}</Typography>
+                        <Typography><span style={{fontWeight:'bold'}}>By:</span> {playlist.ownerUsername}</Typography>
+                    </Box>
+                    <Box display="flex" justifyContent='center' alignItems='center' style={{marginRight:'50px'}}>
+                        <ThumbUpAltOutlinedIcon style={{fontSize:'35px', paddingRight:'10px'}}></ThumbUpAltOutlinedIcon>
+                        <Typography>{playlist.likes.length}</Typography>
+                        <ThumbDownAltOutlinedIcon style={{fontSize:'35px', paddingLeft:'30px', paddingRight:'10px'}}></ThumbDownAltOutlinedIcon>
+                        <Typography>{playlist.dislikes.length}</Typography>
+                    </Box>
+                </Box>
+                <Box id="song-card-selector">
+                    <PublishWorkspaceScreen />
+                </Box>
+                <Box style={{marginTop:'10px'}} display="flex" flexDirection="column">
+                    <Box>
+                        <PublishToolbar />
+                    </Box>
+                    {/* <Box display="flex" justifyContent="flex-end">
+                        <IconButton onClick={(event)=>{handleCloseExpandList(event)}} style={{padding:'0px', color:'black' ,marginRight:'15px'}}><KeyboardDoubleArrowUpIcon style={{fontSize:'38px'}}></KeyboardDoubleArrowUpIcon></IconButton>
+                    </Box> */}
+                    <Box display="flex">
+                    <Box style={{paddingTop:'0px',paddingBottom:'0px'}}sx={{ p: 1, flexGrow: 1 }}>
+                        <Typography style={{paddingTop:'10px',fontSize:'12px',color:'green'}}><span style={{color:'black',fontWeight:'bold'}}>Published:</span> {monthPublished} {dayPublished}, {yearPublished}</Typography>
+                    </Box>
+                    <Box display="flex">
+                        <Box>
+                            <Typography style={{marginRight:'80px', paddingTop:'10px',fontSize:'12px',color:'red'}}><span style={{color:'black',fontWeight:'bold'}}>Listens:</span> {playlist.listens}</Typography>
+                        </Box>
+                        <Box>
+                            <IconButton onClick={(event)=>{handleCloseExpandList(event)}} style={{padding:'0px', color:'black' ,marginRight:'15px'}}><KeyboardDoubleArrowUpIcon style={{fontSize:'38px'}}></KeyboardDoubleArrowUpIcon></IconButton>
+                        </Box>
+                    </Box>
                     </Box>
                 </Box>
             </Box>

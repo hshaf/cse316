@@ -308,6 +308,23 @@ body {
   color: white;
 }
 
+.published-list-card,
+.selected-published-list-card,
+.unselected-published-list-card {
+  font-size: 16pt;
+  margin: 10px;
+  padding: 10px;
+  /* border-radius: 25px;
+  background-color: #242960; */
+  font-family: sans-serif;
+  font-weight: bold;
+  height: 24px;
+  color: #DAB810;
+  /* border: 2px solid black; */
+  border-radius: 13px;
+  margin-bottom: 0px;
+}
+
 #workspace-home,
 #workspace-edit {
   position: absolute;

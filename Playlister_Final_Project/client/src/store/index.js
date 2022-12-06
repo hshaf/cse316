@@ -34,6 +34,7 @@ export const GlobalStoreActionType = {
     SET_CURRENT_LIST: "SET_CURRENT_LIST",
     SET_LIST_NAME_EDIT_ACTIVE: "SET_LIST_NAME_EDIT_ACTIVE",
     PUBLISH_LIST: "PUBLISH_LIST",
+    SET_CURRENT_LIST_AFTER_SELECT: "SET_CURRENT_LIST_AFTER_SELECT",
     EDIT_SONG: "EDIT_SONG",
     RESET_STORE: "RESET_STORE",
     REMOVE_SONG: "REMOVE_SONG",
@@ -239,6 +240,22 @@ function GlobalStoreContextProvider(props) {
                     currentModal : CurrentModal.NONE,
                     idNamePairs: store.idNamePairs,
                     userPlaylists: store.userPlaylists,
+                    currentList: payload.playlist,
+                    isExpandedList: payload.isExtendList,
+                    isPlayingList: payload.isPlayingList,
+                    currentSongIndex: -1,
+                    currentSong: null,
+                    newListCounter: store.newListCounter,
+                    listNameActive: false,
+                    listIdMarkedForDeletion: null,
+                    listMarkedForDeletion: null
+                });
+            }
+            case GlobalStoreActionType.SET_CURRENT_LIST_AFTER_SELECT: {
+                return setStore({
+                    currentModal : CurrentModal.NONE,
+                    idNamePairs: store.idNamePairs,
+                    userPlaylists: payload.playlists,
                     currentList: payload.playlist,
                     isExpandedList: payload.isExtendList,
                     isPlayingList: payload.isPlayingList,
@@ -801,6 +818,41 @@ function GlobalStoreContextProvider(props) {
                             isPlayingList: isPlayingList
                         }
                     });
+                    // history.push("/playlist/" + playlist._id);
+                }
+            }
+        }
+        asyncSetCurrentList(id, isPlayingList, isExtendList);
+    }
+
+    store.setCurrentListAndIncrement = function (id, isPlayingList, isExtendList) {
+        async function asyncSetCurrentList(id, isPlayingList, isExtendList) {
+            let response = await api.getPlaylistById(id);
+            if (response.data.success) {
+                let playlist = response.data.playlist;
+                playlist.listens++;
+
+                response = await api.updatePlaylistById(playlist._id, playlist);
+                if (response.data.success) {
+                    async function asyncLoadUserPlaylists() {
+                        const response = await api.getPlaylists();
+                        if (response.data.success) {
+                            let playlists = response.data.data;
+                            storeReducer({
+                                type: GlobalStoreActionType.SET_CURRENT_LIST_AFTER_SELECT,
+                                payload: {
+                                    playlists: playlists,
+                                    playlist: playlist,
+                                    isExtendList: isExtendList,
+                                    isPlayingList: isPlayingList
+                                }
+                            });
+                        }
+                        else {
+                            console.log("API FAILED TO GET THE USER'S PLAYLISTS");
+                        }
+                    }
+                    asyncLoadUserPlaylists();
                     // history.push("/playlist/" + playlist._id);
                 }
             }

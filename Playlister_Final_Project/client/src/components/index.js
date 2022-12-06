@@ -15,6 +15,9 @@ import WorkspaceScreen from './WorkspaceScreen'
 import MUIAccountErrorModal from './MUIAccountErrorModal'
 import SearchToolbar from './SearchToolbar'
 import PlaylisterYouTubePlayer from './PlaylisterYouTubePlayer'
+import PublishToolbar from './PublishToolbar'
+import PublishWorkspaceScreen from './PublishWorkspaceScreen'
+import PublishSongCard from './PublishSongCard'
 /*
     This serves as a module so that we can import
     all the other components as we wish.
@@ -35,6 +38,9 @@ export {
     RegisterScreen,
     SplashScreen,
     Statusbar, 
+    PublishWorkspaceScreen,
+    PublishToolbar,
+    PublishSongCard,
     WorkspaceScreen,
     SearchToolbar,
     PlaylisterYouTubePlayer,
