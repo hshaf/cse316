@@ -29,6 +29,7 @@ export const GlobalStoreActionType = {
     CREATE_NEW_LIST: "CREATE_NEW_LIST",
     LOAD_ID_NAME_PAIRS: "LOAD_ID_NAME_PAIRS",
     LOAD_USER_PLAYLISTS: "LOAD_USER_PLAYLISTS",
+    LOAD_USER_PLAYLISTS_AFTER_DELETE: "_LOAD_USER_PLAYLISTS_AFTER_DELETE",
     MARK_LIST_FOR_DELETION: "MARK_LIST_FOR_DELETION",
     SET_CURRENT_LIST: "SET_CURRENT_LIST",
     SET_LIST_NAME_EDIT_ACTIVE: "SET_LIST_NAME_EDIT_ACTIVE",
@@ -117,8 +118,8 @@ function GlobalStoreContextProvider(props) {
                 return setStore({
                     currentModal : CurrentModal.NONE,
                     idNamePairs: store.idNamePairs,
-                    userPlaylists: store.userPlaylists,
-                    currentList: payload,
+                    userPlaylists: payload.playlists,
+                    currentList: payload.newList,
                     isExpandedList: true,
                     isPlayingList: false,
                     currentSongIndex: -1,
@@ -163,13 +164,30 @@ function GlobalStoreContextProvider(props) {
                     listMarkedForDeletion: null
                 });
             }
+            // Get all of the user's playlists after deleting a list
+            case GlobalStoreActionType.LOAD_USER_PLAYLISTS_AFTER_DELETE: {
+                return setStore({
+                    currentModal : CurrentModal.NONE,
+                    idNamePairs: store.idNamePairs,
+                    userPlaylists: payload,
+                    currentList: null,
+                    isExpandedList: false,
+                    isPlayingList: false,
+                    currentSongIndex: -1,
+                    currentSong: null,
+                    newListCounter: store.newListCounter,
+                    listNameActive: false,
+                    listIdMarkedForDeletion: null,
+                    listMarkedForDeletion: null
+                });
+            }
             // PREPARE TO DELETE A LIST
             case GlobalStoreActionType.MARK_LIST_FOR_DELETION: {
                 return setStore({
                     currentModal : CurrentModal.DELETE_LIST,
                     idNamePairs: store.idNamePairs,
                     userPlaylists: store.userPlaylists,
-                    currentList: null,
+                    currentList: store.currentList,
                     isExpandedList: store.isExpandedList,
                     isPlayingList: store.isPlayingList,
                     currentSongIndex: -1,
@@ -413,11 +431,34 @@ function GlobalStoreContextProvider(props) {
         if (response.status === 201) {
             tps.clearAllTransactions();
             let newList = response.data.playlist;
-            storeReducer({
-                type: GlobalStoreActionType.CREATE_NEW_LIST,
-                payload: newList
+            // storeReducer({
+            //     type: GlobalStoreActionType.CREATE_NEW_LIST,
+            //     payload: newList
+            // }
+            // );
+            /* LOAD USER LISTS */
+
+            async function asyncLoadUserPlaylists(newList) {
+                const response = await api.getPlaylists();
+                if (response.data.success) {
+                    let playlists = response.data.data;
+                    storeReducer({
+                        type: GlobalStoreActionType.CREATE_NEW_LIST,
+                        payload: {
+                            playlists: playlists,
+                            newList: newList
+                        }
+                    });
+                }
+                else {
+                    console.log("API FAILED TO GET THE USER'S PLAYLISTS");
+                }
             }
-            );
+            asyncLoadUserPlaylists(newList);
+
+            /* LOAD USER LISTS */
+            
+            // store.loadUserPlaylists();
 
             // IF IT'S A VALID LIST THEN LET'S START EDITING IT
             // history.push("/playlist/" + newList._id);
@@ -494,8 +535,26 @@ function GlobalStoreContextProvider(props) {
         async function processDelete(id) {
             let response = await api.deletePlaylistById(id);
             if (response.status === 200) {
-                store.loadIdNamePairs();
-                history.push("/");
+                // store.loadIdNamePairs();
+                // LOAD USER PLAYLISTS
+
+                async function asyncLoadUserPlaylists() {
+                    const response = await api.getPlaylists();
+                    if (response.data.success) {
+                        let playlists = response.data.data;
+                        storeReducer({
+                            type: GlobalStoreActionType.LOAD_USER_PLAYLISTS_AFTER_DELETE,
+                            payload: playlists
+                        });
+                    }
+                    else {
+                        console.log("API FAILED TO GET THE USER'S PLAYLISTS");
+                    }
+                }
+                asyncLoadUserPlaylists();
+
+                // LOAD USER PLAYLISTS
+                // history.push("/");
             }
         }
         processDelete(id);
@@ -686,7 +745,11 @@ function GlobalStoreContextProvider(props) {
             if (response.data.success) {
                 storeReducer({
                     type: GlobalStoreActionType.SET_CURRENT_LIST,
-                    payload: store.currentList
+                    payload: {
+                        playlist: store.currentList,
+                        isPlayingList: store.isPlayingList,
+                        isExtendList: store.isExpandedList
+                    }
                 });
             }
         }

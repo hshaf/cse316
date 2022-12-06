@@ -111,7 +111,7 @@ body {
 
 #edit-toolbar {
   background-color: transparent;
-  float: right;
+  /* float: right; */
 }
 
 .playlister-button,

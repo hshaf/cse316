@@ -42,13 +42,20 @@ function ListCard(props) {
 
     function handleExpandList(event) {
         event.stopPropagation();
+        store.clearTransactions();
 
-        // CHANGE THE CURRENT LIST
-        store.setCurrentList(playlist._id, store.isPlayingList, true);
+        if (store.currentList && store.currentList._id !== playlist._id) {
+            store.setCurrentList(playlist._id, false, true);
+        }
+        else {
+            // CHANGE THE CURRENT LIST
+            store.setCurrentList(playlist._id, store.isPlayingList, true);
+        }
     }
 
     function handleCloseExpandList(event) {
         event.stopPropagation();
+        store.clearTransactions();
 
         // No longer in edit mode
         store.setCurrentList(playlist._id, store.isPlayingList, false);
@@ -145,11 +152,13 @@ function ListCard(props) {
                 <Box id="song-card-selector">
                     <WorkspaceScreen />
                 </Box>
-                <Box style={{width:'100%'}}>
-                    <EditToolbar />
-                </Box>
-                <Box display="flex" justifyContent="flex-end">
-                    <IconButton onClick={(event)=>{handleCloseExpandList(event)}} style={{padding:'0px', color:'black' ,marginRight:'15px'}}><KeyboardDoubleArrowUpIcon style={{fontSize:'38px'}}></KeyboardDoubleArrowUpIcon></IconButton>
+                <Box style={{marginTop:'10px'}} display="flex" flexDirection="column">
+                    <Box>
+                        <EditToolbar />
+                    </Box>
+                    <Box display="flex" justifyContent="flex-end">
+                        <IconButton onClick={(event)=>{handleCloseExpandList(event)}} style={{padding:'0px', color:'black' ,marginRight:'15px'}}><KeyboardDoubleArrowUpIcon style={{fontSize:'38px'}}></KeyboardDoubleArrowUpIcon></IconButton>
+                    </Box>
                 </Box>
             </Box>
             {/* <Box sx={{ p: 1 }}>

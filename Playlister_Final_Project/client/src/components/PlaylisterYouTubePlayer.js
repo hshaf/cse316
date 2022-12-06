@@ -37,9 +37,15 @@ export default function PlaylisterYouTubePlayer(props) {
         if (store.currentList.songs.length > 0) {
             // Update playlist info box below player
             document.getElementById("current-playlist-text").innerHTML = 'Playlist: ' + store.currentList.name;
-            document.getElementById("current-song-text").innerHTML = 'Song #: ' + currentSong + 1;
+            document.getElementById("current-song-text").innerHTML = 'Song #: ' + ((currentSong % playlist.length) + 1);
             document.getElementById("current-song-title-text").innerHTML = 'Title: ' + store.currentList.songs[currentSong].title;
             document.getElementById("current-song-artist-text").innerHTML = 'Artist: ' + store.currentList.songs[currentSong].artist;
+        }
+        else {
+            document.getElementById("current-playlist-text").innerHTML = 'Playlist: ';
+            document.getElementById("current-song-text").innerHTML = 'Song #: ';
+            document.getElementById("current-song-title-text").innerHTML = 'Title: ';
+            document.getElementById("current-song-artist-text").innerHTML = 'Artist: ';
         }
     }
 

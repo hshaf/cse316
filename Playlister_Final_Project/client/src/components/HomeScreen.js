@@ -45,7 +45,7 @@ const HomeScreen = () => {
         // Check if list is selected
         if (store.currentList) {
             store.userPlaylists.forEach((playlist) => {
-                if (playlist._id == store.currentList._id)
+                if (playlist._id == store.currentList._id && store.isPlayingList)
                     playlist.isSelected = true;
                 else 
                     playlist.isSelected = false;
@@ -69,11 +69,22 @@ const HomeScreen = () => {
     let songs = [];
     let youtubeplayer = null;
 
+    let currrentPlaylistText = <Typography id="current-playlist-text" fontSize='14px' fontWeight='bold'>Playlist:</Typography>
+    let currentSongText = <Typography id="current-song-text" fontSize='14px' fontWeight='bold'>Song #:</Typography>
+    let currentSongTitleText = <Typography id="current-song-title-text" fontSize='14px' fontWeight='bold'>Title:</Typography>
+    let currentSongArtistText = <Typography id="current-song-artist-text" fontSize='14px' fontWeight='bold'>Artist:</Typography>
+
     if (store.currentList && store.isPlayingList) {
         songs = store.currentList.songs;
         // Get YouTube IDs
         songs = songs.map((song) => (song.youTubeId))
         youtubeplayer = <PlaylisterYouTubePlayer songs={songs} />;
+    }
+    else {
+        currrentPlaylistText = <Typography id="current-playlist-text" fontSize='14px' fontWeight='bold'></Typography>
+        currentSongText = <Typography id="current-song-text" fontSize='14px' fontWeight='bold'></Typography>
+        currentSongTitleText = <Typography id="current-song-title-text" fontSize='14px' fontWeight='bold'></Typography>
+        currentSongArtistText = <Typography id="current-song-artist-text" fontSize='14px' fontWeight='bold'></Typography>
     }
 
     return (
@@ -99,11 +110,11 @@ const HomeScreen = () => {
                         <Box display="flex" justifyContent="center">
                             <Typography fontWeight='bold'>Now Playing</Typography>
                         </Box>
-                        <Box marginLeft='10px'>
-                            <Typography id="current-playlist-text" fontSize='14px' fontWeight='bold'>Playlist:</Typography>
-                            <Typography id="current-song-text" fontSize='14px' fontWeight='bold'>Song #:</Typography>
-                            <Typography id="current-song-title-text" fontSize='14px' fontWeight='bold'>Title:</Typography>
-                            <Typography id="current-song-artist-text" fontSize='14px' fontWeight='bold'>Artist:</Typography>
+                        <Box style={{minHeight:'85px', maxHeight:'85px'}} marginLeft='10px'>
+                            {currrentPlaylistText}
+                            {currentSongText}
+                            {currentSongTitleText}
+                            {currentSongArtistText}
                         </Box>
                         <Box display="flex" justifyContent="center">
                             <Box display="flex" justifyContent="center" style={{minWidth:'350px',maxWidth:'350px',minHeight:'30px',maxHeight:'30px',border:'2px solid black',borderRadius:'10px'}} bgcolor='#F6F6E6'>
