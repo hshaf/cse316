@@ -989,6 +989,16 @@ function GlobalStoreContextProvider(props) {
         asyncSetCurrentList(id);
     }
 
+    store.addComment = function (text) {
+        if (store.currentList) {
+            store.currentList.comments.push({
+                username: auth.user.username,
+                comment: text
+            })
+            store.updateCurrentList();
+        }
+    }
+
     store.getPlaylistSize = function() {
         return store.currentList.songs.length;
     }

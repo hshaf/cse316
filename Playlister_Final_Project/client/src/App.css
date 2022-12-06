@@ -164,7 +164,7 @@ body {
 }
 
 #youtube-player {
-  min-height: 40vh;
+  min-height: 39vh;
 }
 
 #song-card-selector {
@@ -293,6 +293,22 @@ body {
   background-color: #242960;
   color:white;
   font-family: sans-serif;
+}
+
+.comment-card {
+  font-size: 14pt;
+  margin: 10px;
+  padding: 13px;
+  border-radius: 25px;
+  background-color: #DAB810;
+  font-family: sans-serif;
+  /* font-weight: bold; */
+  height: auto;
+  max-width: 100%;
+  overflow-wrap : break-word;
+  border: 2px solid black;
+  border-radius: 13px;
+  margin-bottom: 0px;
 }
 
 .list-card-button {

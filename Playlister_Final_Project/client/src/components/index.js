@@ -18,6 +18,8 @@ import PlaylisterYouTubePlayer from './PlaylisterYouTubePlayer'
 import PublishToolbar from './PublishToolbar'
 import PublishWorkspaceScreen from './PublishWorkspaceScreen'
 import PublishSongCard from './PublishSongCard'
+import CommentWorkspaceScreen from './CommentWorkspaceScreen'
+import CommentCard from './CommentCard'
 /*
     This serves as a module so that we can import
     all the other components as we wish.
@@ -40,6 +42,8 @@ export {
     Statusbar, 
     PublishWorkspaceScreen,
     PublishToolbar,
+    CommentWorkspaceScreen,
+    CommentCard,
     PublishSongCard,
     WorkspaceScreen,
     SearchToolbar,

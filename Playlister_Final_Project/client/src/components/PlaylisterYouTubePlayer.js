@@ -156,7 +156,7 @@ export default function PlaylisterYouTubePlayer(props) {
     }
 
     return (
-        <Box>
+        <Box id="youtube-player">
             <Box bgcolor='black'>
                 <YouTube
                     videoId={playlist[currentSong]}

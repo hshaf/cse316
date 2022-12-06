@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { GlobalStoreContext } from '../store'
 import ListCard from './ListCard.js'
 import MUIDeleteModal from './MUIDeleteModal'
@@ -17,6 +17,10 @@ import SkipNextIcon from '@mui/icons-material/SkipNext';
 import StopIcon from '@mui/icons-material/Stop';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import IconButton from '@mui/material/IconButton';
+import { TextField } from '@mui/material';
+import { CommentWorkspaceScreen } from '.';
+import Tabs from '@mui/material/Tabs';
+import Tab from '@mui/material/Tab';
 /*
     This React component lists all the top5 lists in the UI.
     
@@ -24,6 +28,7 @@ import IconButton from '@mui/material/IconButton';
 */
 const HomeScreen = () => {
     const { store } = useContext(GlobalStoreContext);
+    const [text, setText] = useState("");
 
     let addListClass = "playlister-button";
 
@@ -67,7 +72,46 @@ const HomeScreen = () => {
 
     // Songs for the YouTube player
     let songs = [];
-    let youtubeplayer = null;
+    let youtubeplayer = <Box id="youtube-player"></Box>;
+    let commentsList = <Box id="comments-list"></Box>;
+
+    function handleKeyPress(event) {
+        if (event.code === "Enter") {
+            store.addComment(text);
+            event.target.value = "";
+            setText(event.target.value);
+        }
+    }
+    function handleUpdateText(event) {
+        setText(event.target.value);
+    }
+
+    // Create comments list
+    if (store.currentList && store.currentList.isPublished) {
+        commentsList =
+            <Box style={{backgroundColor: '#C4BEEE' ,borderRadius:'10px', border:'2px solid black'}} id="comments-list">
+                <Box>
+                    <CommentWorkspaceScreen />
+                </Box>
+                <Box>
+                    <TextField
+                    label="Add Comment"
+                    variant="filled"
+                    style={{marginTop:'15px',borderRadius:'10px', backgroundColor:'white'}}
+                    fullWidth
+                    onKeyPress={handleKeyPress}
+                    onChange={handleUpdateText}
+                    >
+
+                    </TextField>
+                </Box>
+            </Box>;
+    }
+    const [tabIndex, setTabIndex] = useState(0);
+
+    const handleTabChange = (event, newTabIndex) => {
+        setTabIndex(newTabIndex);
+    };
 
     let currrentPlaylistText = <Typography id="current-playlist-text" fontSize='14px' fontWeight='bold'>Playlist:</Typography>
     let currentSongText = <Typography id="current-song-text" fontSize='14px' fontWeight='bold'>Song #:</Typography>
@@ -125,12 +169,29 @@ const HomeScreen = () => {
                     </div>
                 </div>
                 <div id="player-and-list-comments">
-                    <Box id="player-comments-tabs">
-                        <Button variant='contained' style={{fontWeight:'bold', color:'black', width:'125px'}}>Player</Button>
-                        <Button variant='contained' style={{fontWeight:'bold', color:'black', width:'125px'}}>Comments</Button>
+                    {/* <Box id="player-comments-tabs">
+                        <Button variant='contained' onClick={handlePlayer} style={{fontWeight:'bold', color:'black', width:'125px'}}>Player</Button>
+                        <Button variant='contained' onClick={handleComments} style={{fontWeight:'bold', color:'black', width:'125px'}}>Comments</Button>
+                    </Box> */}
+                    <Box id="player-tabs">
+                        <Tabs value={tabIndex} onChange={handleTabChange}>
+                            <Tab style={{fontWeight:'bold'}} label="Player" />
+                            <Tab disabled={store.isListPublished() || !store.currentList} style={{fontWeight:'bold'}} label="Comments" />
+                        </Tabs>
+                    </Box>
+                    <Box>
+                        {tabIndex === 0 && (
+                            youtubeplayer
+                        )}
+                    </Box>
+                    <Box>
+                        {tabIndex === 1 && (
+                            commentsList
+                        )}
                     </Box>
                     {/* <PlaylisterYouTubePlayer songs={songs} /> */}
-                    {youtubeplayer}
+                    {/* {youtubeplayer} */}
+                    {/* {commentsList} */}
                     {/* <Box bgcolor='black' id="youtube-player">
                         {youtubeplayer}
                     </Box>
