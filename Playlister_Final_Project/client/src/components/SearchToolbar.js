@@ -1,7 +1,7 @@
 import { useContext, useState } from 'react';
 import { Link } from 'react-router-dom'
 import AuthContext from '../auth';
-import { GlobalStoreContext } from '../store'
+import { GlobalStoreContext, sortTypes } from '../store'
 import { useLocation } from 'react-router-dom';
 import playlisterlogo from './playlister-logo.png';
 
@@ -39,6 +39,21 @@ export default function SearchToolbar() {
         handleMenuClose();
     }
 
+    const handleSortCreationDate = () => {
+        store.setSortType(sortTypes.BY_CREATION_DATE);
+        handleMenuClose();
+    };
+
+    const handleSortLastEdit = () => {
+        store.setSortType(sortTypes.BY_LAST_EDIT_DATE);
+        handleMenuClose();
+    };
+
+    const handleSortByName = () => {
+        store.setSortType(sortTypes.BY_NAME);
+        handleMenuClose();
+    };
+
     const menuId = 'search-playlist-menu';
     const sortListMenu = 
         <Menu
@@ -57,11 +72,9 @@ export default function SearchToolbar() {
             open={isMenuOpen}
             onClose={handleMenuClose}
         >
-            <MenuItem onClick={handleLogout}>Name (A - Z)</MenuItem>
-            <MenuItem onClick={handleLogout}>Publish Date (Newest)</MenuItem>
-            <MenuItem onClick={handleLogout}>Listens (High - Low)</MenuItem>
-            <MenuItem onClick={handleLogout}>Likes (High - Low)</MenuItem>
-            <MenuItem onClick={handleLogout}>Dislikes (High - Low)</MenuItem>
+            <MenuItem onClick={handleSortCreationDate}>Creation Date (Old-New)</MenuItem>
+            <MenuItem onClick={handleSortLastEdit}>Last Edit Date (New-Old)</MenuItem>
+            <MenuItem onClick={handleSortByName}>By Name (A-Z)</MenuItem>
         </Menu>        
 
     let menu = sortListMenu;
