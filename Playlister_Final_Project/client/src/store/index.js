@@ -528,7 +528,26 @@ function GlobalStoreContextProvider(props) {
     store.duplicateList = async function () {
         // let newListName = "Untitled" + store.newListCounter;
         // Parameter list is: (newListName, newSongs, userEmail, username, isPublished, publishDate, likes, dislikes, listens, comments)
-        const response = await api.createPlaylist(store.currentList.name, store.currentList.songs, auth.user.email, auth.user.username, false, "No publish date", [], [], 0, []);
+        let num = -1;
+        let newListName = store.currentList.name;
+        let foundMatch = false;
+        let continueSearch = true;
+        while (continueSearch) {
+            for (let i = 0; i < store.userPlaylists.length; i++) {
+                if (store.userPlaylists[i].name === newListName) {
+                    foundMatch = true;
+                }
+            }
+            if (!foundMatch) {
+                continueSearch = false;
+            }
+            else {
+                num++;
+                newListName = store.currentList.name + " " + num;
+                foundMatch = false;
+            }
+        }
+        const response = await api.createPlaylist(newListName, store.currentList.songs, auth.user.email, auth.user.username, false, "No publish date", [], [], 0, []);
         console.log("createNewList response: " + response);
         if (response.status === 201) {
             tps.clearAllTransactions();
@@ -623,7 +642,29 @@ function GlobalStoreContextProvider(props) {
 
     // THIS FUNCTION CREATES A NEW LIST
     store.createNewList = async function () {
-        let newListName = "Untitled" + store.newListCounter;
+        // let newListName = "Untitled" + store.newListCounter;
+        // Generate unique playlist name
+        let num = 0;
+        let newListName = "Untitled " + num;
+        let foundMatch = false;
+        let continueSearch = true;
+        while (continueSearch) {
+            for (let i = 0; i < store.userPlaylists.length; i++) {
+                if (store.userPlaylists[i].name === newListName) {
+                    foundMatch = true;
+                }
+            }
+            if (!foundMatch) {
+                continueSearch = false;
+            }
+            else {
+                num++;
+                newListName = "Untitled " + num;
+                foundMatch = false;
+            }
+        }
+
+
         // Parameter list is: (newListName, newSongs, userEmail, username, isPublished, publishDate, likes, dislikes, listens, comments)
         const response = await api.createPlaylist(newListName, [], auth.user.email, auth.user.username, false, "No publish date", [], [], 0, []);
         console.log("createNewList response: " + response);

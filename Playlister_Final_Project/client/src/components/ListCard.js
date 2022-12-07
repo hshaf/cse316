@@ -110,8 +110,24 @@ function ListCard(props) {
     function handleKeyPress(event) {
         if (event.code === "Enter") {
             let id = event.target.id.substring("list-".length);
-            store.changeListName(id, text);
-            toggleEdit();
+            let newName = text;
+            if (newName.length === 0) {
+                newName = playlist.name;
+            }
+            let foundMatch = false;
+            for (let i = 0; i < store.userPlaylists.length; i++) {
+                if (store.userPlaylists[i].name === newName) {
+                    foundMatch = true;
+                }
+            }
+            if (foundMatch) {
+                // List with name already exists
+                console.log('could not rename list: list name already used')
+            }
+            else {
+                store.changeListName(id, text);
+                toggleEdit();
+            }
         }
     }
     function handleUpdateText(event) {
