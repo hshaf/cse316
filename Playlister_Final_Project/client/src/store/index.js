@@ -32,6 +32,7 @@ export const GlobalStoreActionType = {
     LOAD_USER_PLAYLISTS_AFTER_DELETE: "_LOAD_USER_PLAYLISTS_AFTER_DELETE",
     MARK_LIST_FOR_DELETION: "MARK_LIST_FOR_DELETION",
     SET_CURRENT_LIST: "SET_CURRENT_LIST",
+    SET_SEARCH_FILTER: "SET_SEARCH_FILTER",
     SET_LIST_NAME_EDIT_ACTIVE: "SET_LIST_NAME_EDIT_ACTIVE",
     PUBLISH_LIST: "PUBLISH_LIST",
     SET_SORT_TYPE: "SET_SORT_TYPE",
@@ -71,6 +72,7 @@ function GlobalStoreContextProvider(props) {
         isExpandedList: false,
         isPlayingList: false,
         currentSongIndex : -1,
+        searchFilter: null,
         currentSong : null,
         sortType: sortTypes.BY_CREATION_DATE,
         newListCounter: 0,
@@ -99,6 +101,7 @@ function GlobalStoreContextProvider(props) {
                     userPlaylists: payload.playlists,
                     currentList: null,
                     isExpandedList: false,
+                    searchFilter: store.searchFilter,
                     isPlayingList: false,
                     currentSongIndex: -1,
                     sortType: store.sortType,
@@ -118,6 +121,7 @@ function GlobalStoreContextProvider(props) {
                     currentList: null,
                     isExpandedList: false,
                     isPlayingList: false,
+                    searchFilter: store.searchFilter,
                     currentSongIndex: -1,
                     sortType: store.sortType,
                     currentSong: null,
@@ -135,6 +139,7 @@ function GlobalStoreContextProvider(props) {
                     userPlaylists: [],
                     currentList: null,
                     isExpandedList: false,
+                    searchFilter: null,
                     isPlayingList: false,
                     currentSongIndex : -1,
                     sortType: sortTypes.BY_CREATION_DATE,
@@ -155,6 +160,7 @@ function GlobalStoreContextProvider(props) {
                     isExpandedList: true,
                     isPlayingList: false,
                     currentSongIndex: -1,
+                    searchFilter: store.searchFilter,
                     sortType: store.sortType,
                     currentSong: null,
                     newListCounter: store.newListCounter + 1,
@@ -174,6 +180,7 @@ function GlobalStoreContextProvider(props) {
                     isPlayingList: store.isPlayingList,
                     currentSongIndex: -1,
                     currentSong: null,
+                    searchFilter: store.searchFilter,
                     sortType: store.sortType,
                     newListCounter: store.newListCounter,
                     listNameActive: false,
@@ -192,6 +199,7 @@ function GlobalStoreContextProvider(props) {
                     isPlayingList: store.isPlayingList,
                     currentSongIndex: -1,
                     currentSong: null,
+                    searchFilter: store.searchFilter,
                     sortType: store.sortType,
                     newListCounter: store.newListCounter,
                     listNameActive: false,
@@ -209,8 +217,27 @@ function GlobalStoreContextProvider(props) {
                     isExpandedList: store.isExpandedList,
                     isPlayingList: store.isPlayingList,
                     currentSongIndex: -1,
+                    searchFilter: store.searchFilter,
                     currentSong: null,
                     sortType: payload.sortType,
+                    newListCounter: store.newListCounter,
+                    listNameActive: false,
+                    listIdMarkedForDeletion: null,
+                    listMarkedForDeletion: null
+                });
+            }
+            case GlobalStoreActionType.SET_SEARCH_FILTER: {
+                return setStore({
+                    currentModal : CurrentModal.NONE,
+                    idNamePairs: store.idNamePairs,
+                    userPlaylists: payload.playlists,
+                    currentList: null,
+                    isExpandedList: false,
+                    isPlayingList: false,
+                    currentSongIndex: -1,
+                    searchFilter: payload.filter,
+                    currentSong: null,
+                    sortType: store.sortType,
                     newListCounter: store.newListCounter,
                     listNameActive: false,
                     listIdMarkedForDeletion: null,
@@ -228,6 +255,7 @@ function GlobalStoreContextProvider(props) {
                     isPlayingList: false,
                     currentSongIndex: -1,
                     currentSong: null,
+                    searchFilter: store.searchFilter,
                     sortType: store.sortType,
                     newListCounter: store.newListCounter,
                     listNameActive: false,
@@ -246,6 +274,7 @@ function GlobalStoreContextProvider(props) {
                     isPlayingList: store.isPlayingList,
                     currentSongIndex: -1,
                     currentSong: null,
+                    searchFilter: store.searchFilter,
                     sortType: store.sortType,
                     newListCounter: store.newListCounter,
                     listNameActive: false,
@@ -264,6 +293,7 @@ function GlobalStoreContextProvider(props) {
                     currentSongIndex: store.currentSongIndex,
                     currentSong: store.currentSong,
                     sortType: store.sortType,
+                    searchFilter: store.searchFilter,
                     newListCounter: store.newListCounter,
                     listNameActive: store.listNameActive,
                     listIdMarkedForDeletion: store.listIdMarkedForDeletion,
@@ -280,6 +310,7 @@ function GlobalStoreContextProvider(props) {
                     isExpandedList: payload.isExtendList,
                     isPlayingList: payload.isPlayingList,
                     currentSongIndex: -1,
+                    searchFilter: store.searchFilter,
                     sortType: store.sortType,
                     currentSong: null,
                     newListCounter: store.newListCounter,
@@ -298,6 +329,7 @@ function GlobalStoreContextProvider(props) {
                     isPlayingList: payload.isPlayingList,
                     currentSongIndex: -1,
                     sortType: store.sortType,
+                    searchFilter: store.searchFilter,
                     currentSong: null,
                     newListCounter: store.newListCounter,
                     listNameActive: false,
@@ -314,6 +346,7 @@ function GlobalStoreContextProvider(props) {
                     isExpandedList: store.isExpandedList,
                     isPlayingList: store.isPlayingList,
                     currentSongIndex: -1,
+                    searchFilter: store.searchFilter,
                     sortType: store.sortType,
                     currentSong: null,
                     newListCounter: store.newListCounter,
@@ -332,6 +365,7 @@ function GlobalStoreContextProvider(props) {
                     isExpandedList: payload.isExtendList,
                     isPlayingList: payload.isPlayingList,
                     currentSongIndex: -1,
+                    searchFilter: store.searchFilter,
                     sortType: store.sortType,
                     currentSong: null,
                     newListCounter: store.newListCounter,
@@ -350,6 +384,7 @@ function GlobalStoreContextProvider(props) {
                     isExpandedList: payload,
                     isPlayingList: store.isPlayingList,
                     currentSongIndex: -1,
+                    searchFilter: store.searchFilter,
                     sortType: store.sortType,
                     currentSong: null,
                     newListCounter: store.newListCounter,
@@ -368,6 +403,7 @@ function GlobalStoreContextProvider(props) {
                     isExpandedList: store.isExpandedList,
                     isPlayingList: payload,
                     currentSongIndex: -1,
+                    searchFilter: store.searchFilter,
                     sortType: store.sortType,
                     currentSong: null,
                     newListCounter: store.newListCounter,
@@ -386,6 +422,7 @@ function GlobalStoreContextProvider(props) {
                     isExpandedList: store.isExpandedList,
                     isPlayingList: store.isPlayingList,
                     currentSongIndex: -1,
+                    searchFilter: store.searchFilter,
                     sortType: store.sortType,
                     currentSong: null,
                     newListCounter: store.newListCounter,
@@ -403,6 +440,7 @@ function GlobalStoreContextProvider(props) {
                     currentList: store.currentList,
                     isExpandedList: store.isExpandedList,
                     sortType: store.sortType,
+                    searchFilter: store.searchFilter,
                     isPlayingList: store.isPlayingList,
                     currentSongIndex: payload.currentSongIndex,
                     currentSong: payload.currentSong,
@@ -420,6 +458,7 @@ function GlobalStoreContextProvider(props) {
                     currentList: store.currentList,
                     isExpandedList: store.isExpandedList,
                     sortType: store.sortType,
+                    searchFilter: store.searchFilter,
                     isPlayingList: store.isPlayingList,
                     currentSongIndex: payload.currentSongIndex,
                     currentSong: payload.currentSong,
@@ -436,6 +475,7 @@ function GlobalStoreContextProvider(props) {
                     userPlaylists: store.userPlaylists,
                     currentList: store.currentList,
                     currentSongIndex: -1,
+                    searchFilter: store.searchFilter,
                     sortType: store.sortType,
                     isExpandedList: store.isExpandedList,
                     isPlayingList: store.isPlayingList,
@@ -473,7 +513,7 @@ function GlobalStoreContextProvider(props) {
                             const response = await api.getPlaylists();
                             if (response.data.success) {
                                 let playlists = response.data.data;
-                                store.sortLists(playlists);
+                                playlists = store.sortLists(playlists);
                                 storeReducer({
                                     type: GlobalStoreActionType.CHANGE_LIST_NAME,
                                     payload: {
@@ -547,7 +587,7 @@ function GlobalStoreContextProvider(props) {
                         const response = await api.getPlaylists();
                         if (response.data.success) {
                             let playlists = response.data.data;
-                            store.sortLists(playlists);
+                            playlists = store.sortLists(playlists);
                             storeReducer({
                                 type: GlobalStoreActionType.PUBLISH_LIST,
                                 payload: {
@@ -590,6 +630,10 @@ function GlobalStoreContextProvider(props) {
                 if (sortType === sortTypes.BY_NAME) {
                     playlists.sort((a, b) => a.name.localeCompare(b.name))
                 }
+
+                if (store.searchFilter !== null) {
+                    playlists = playlists.filter(p => p.name.includes(store.searchFilter))
+                }
                 storeReducer({
                     type: GlobalStoreActionType.SET_SORT_TYPE,
                     payload: {
@@ -618,6 +662,57 @@ function GlobalStoreContextProvider(props) {
         }
         if (store.sortType === sortTypes.BY_NAME) {
             playlists.sort((a, b) => a.name.localeCompare(b.name))
+        }
+        if (store.searchFilter !== null) {
+            playlists = playlists.filter(p => p.name.includes(store.searchFilter))
+        }
+        return playlists;
+    }
+
+    store.setSearchFilter = function (text) {
+        async function asyncLoadUserPlaylists(text) {
+            const response = await api.getPlaylists();
+            if (response.data.success) {
+                let playlists = response.data.data;
+
+                if (store.sortType === sortTypes.BY_LAST_EDIT_DATE) {
+                    playlists.sort((a, b) => {
+                        return Date.parse(b.updatedAt) - Date.parse(a.updatedAt)
+                    })
+                }
+                if (store.sortType === sortTypes.BY_CREATION_DATE) {
+                    playlists.sort((a, b) => {
+                        return Date.parse(a.createdAt) - Date.parse(b.createdAt)
+                    })
+                }
+                if (store.sortType === sortTypes.BY_NAME) {
+                    playlists.sort((a, b) => a.name.localeCompare(b.name))
+                }
+                
+                playlists = playlists.filter(p => p.name.includes(text))
+
+                if (text.length === 0) {
+                    playlists = [];
+                }
+
+                storeReducer({
+                    type: GlobalStoreActionType.SET_SEARCH_FILTER,
+                    payload: {
+                        playlists: playlists,
+                        filter: text
+                    }
+                });
+            }
+            else {
+                console.log("API FAILED TO GET THE USER'S PLAYLISTS");
+            }
+        }
+        asyncLoadUserPlaylists(text);
+    }
+
+    store.filter = function (playlists) {
+        if (store.searchFilter !== null) {
+            playlists = playlists.filter(p => p.name.includes(store.searchFilter))
         }
     }
 
@@ -660,7 +755,7 @@ function GlobalStoreContextProvider(props) {
                 const response = await api.getPlaylists();
                 if (response.data.success) {
                     let playlists = response.data.data;
-                    store.sortLists(playlists);
+                    playlists = store.sortLists(playlists);
                     storeReducer({
                         type: GlobalStoreActionType.CREATE_NEW_LIST,
                         payload: {
@@ -780,7 +875,7 @@ function GlobalStoreContextProvider(props) {
                 const response = await api.getPlaylists();
                 if (response.data.success) {
                     let playlists = response.data.data;
-                    store.sortLists(playlists);
+                    playlists = store.sortLists(playlists);
                     storeReducer({
                         type: GlobalStoreActionType.CREATE_NEW_LIST,
                         payload: {
@@ -831,7 +926,7 @@ function GlobalStoreContextProvider(props) {
             const response = await api.getPlaylists();
             if (response.data.success) {
                 let playlists = response.data.data;
-                store.sortLists(playlists);
+                playlists = store.sortLists(playlists);
                 storeReducer({
                     type: GlobalStoreActionType.LOAD_USER_PLAYLISTS,
                     payload: playlists
@@ -882,7 +977,7 @@ function GlobalStoreContextProvider(props) {
                     const response = await api.getPlaylists();
                     if (response.data.success) {
                         let playlists = response.data.data;
-                        store.sortLists(playlists);
+                        playlists = store.sortLists(playlists);
                         storeReducer({
                             type: GlobalStoreActionType.LOAD_USER_PLAYLISTS_AFTER_DELETE,
                             payload: playlists
@@ -997,7 +1092,7 @@ function GlobalStoreContextProvider(props) {
                         const response = await api.getPlaylists();
                         if (response.data.success) {
                             let playlists = response.data.data;
-                            store.sortLists(playlists);
+                            playlists = store.sortLists(playlists);
                             storeReducer({
                                 type: GlobalStoreActionType.SET_CURRENT_LIST_AFTER_SELECT,
                                 payload: {
@@ -1059,7 +1154,7 @@ function GlobalStoreContextProvider(props) {
                         const response = await api.getPlaylists();
                         if (response.data.success) {
                             let playlists = response.data.data;
-                            store.sortLists(playlists);
+                            playlists = store.sortLists(playlists);
                             storeReducer({
                                 type: GlobalStoreActionType.LIKE_LIST,
                                 payload: playlists
@@ -1116,7 +1211,7 @@ function GlobalStoreContextProvider(props) {
                         const response = await api.getPlaylists();
                         if (response.data.success) {
                             let playlists = response.data.data;
-                            store.sortLists(playlists);
+                            playlists = store.sortLists(playlists);
                             storeReducer({
                                 type: GlobalStoreActionType.LIKE_LIST,
                                 payload: playlists

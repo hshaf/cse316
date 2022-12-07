@@ -26,6 +26,7 @@ export default function SearchToolbar() {
     const { store } = useContext(GlobalStoreContext);
     const [anchorEl, setAnchorEl] = useState(null);
     const isMenuOpen = Boolean(anchorEl);
+    const [text, setText] = useState("");
 
     const handleSortMenuOpen = (event) => {
         setAnchorEl(event.currentTarget);
@@ -53,6 +54,19 @@ export default function SearchToolbar() {
         store.setSortType(sortTypes.BY_NAME);
         handleMenuClose();
     };
+
+    function handleKeyPress(event) {
+        if (event.code === "Enter") {
+            // store.addComment(text);
+            // event.target.value = "";
+            // setText(event.target.value);
+            // console.log(text);
+            store.setSearchFilter(text);
+        }
+    }
+    function handleUpdateText(event) {
+        setText(event.target.value);
+    }
 
     const menuId = 'search-playlist-menu';
     const sortListMenu = 
@@ -94,6 +108,8 @@ export default function SearchToolbar() {
                             name="search-list"
                             label="Search"
                             type="search-list"
+                            onKeyPress={handleKeyPress}
+                            onChange={handleUpdateText}
                             id="search-list"
                             autoComplete="search-list"
                             style={{backgroundColor:'white', width:'400px'}}
