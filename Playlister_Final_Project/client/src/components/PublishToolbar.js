@@ -54,7 +54,10 @@ function PublishToolbar() {
         store.duplicateList();
     }
     function getDeleteButton() {
-        if (store.currentList && auth.user.username !== store.currentList.ownerUsername) {
+        if (auth.guest) {
+            return null;
+        }
+        if (auth.user && store.currentList && auth.user.username !== store.currentList.ownerUsername) {
             return null;
         }
         let deletebtn =
@@ -77,7 +80,7 @@ function PublishToolbar() {
             <Box style={{float:'right'}}>
                 {getDeleteButton()}
                 <Button 
-                    disabled={isModalOpen || !store.currentList}
+                    disabled={auth.guest || isModalOpen || !store.currentList}
                     id='duplicate-list-button'
                     onClick={handleDuplicate}
                     className={duplicateClass}

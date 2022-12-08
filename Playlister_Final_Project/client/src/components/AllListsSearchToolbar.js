@@ -133,9 +133,9 @@ export default function AllListsSearchToolbar() {
             <AppBar position="static" style={{ backgroundColor: 'transparent' }} elevation={0}>
                 <Toolbar style={{minHeight: '60px', maxHeight: '60px'}}>
                     <Box sx={{flexGrow: 1}} style={{paddingTop:'5px'}}>
-                        <IconButton onClick={handleHome}><HomeOutlinedIcon style={{color:'black', fontSize:'48px' }}></HomeOutlinedIcon></IconButton>
-                        <IconButton onClick={handleAllLists}><GroupsOutlinedIcon style={{color:'black', fontSize:'48px'}}></GroupsOutlinedIcon></IconButton>
-                        <IconButton onClick={handleUsers}><Person2OutlinedIcon style={{color:'black', fontSize:'48px'}}></Person2OutlinedIcon></IconButton>
+                        <IconButton disabled={auth.guest} onClick={handleHome}><HomeOutlinedIcon style={{fontSize:'48px' }}></HomeOutlinedIcon></IconButton>
+                        <IconButton onClick={handleAllLists}><GroupsOutlinedIcon style={{fontSize:'48px'}}></GroupsOutlinedIcon></IconButton>
+                        <IconButton onClick={handleUsers}><Person2OutlinedIcon style={{fontSize:'48px'}}></Person2OutlinedIcon></IconButton>
                     </Box>
                     <Box sx={{flexGrow: 1}} style={{paddingBottom:'5px'}}>
                         <TextField

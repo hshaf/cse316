@@ -12,6 +12,7 @@ export const AuthActionType = {
     LOGOUT_USER: "LOGOUT_USER",
     REGISTER_USER: "REGISTER_USER",
     REGISTER_ERROR: "REGISTER_ERROR",
+    LOGIN_GUEST: "LOGIN_GUEST",
     LOGIN_ERROR: "LOGIN_ERROR",
 }
 
@@ -19,7 +20,8 @@ function AuthContextProvider(props) {
     const [auth, setAuth] = useState({
         user: null,
         loggedIn: false,
-        errorMsg: null
+        errorMsg: null,
+        guest: false
     });
     const history = useHistory();
 
@@ -41,7 +43,16 @@ function AuthContextProvider(props) {
                 return setAuth({
                     user: payload.user,
                     loggedIn: true,
-                    errorMsg: null
+                    errorMsg: null,
+                    guest: false
+                })
+            }
+            case AuthActionType.LOGIN_GUEST: {
+                return setAuth({
+                    user: null,
+                    guest: payload.guest,
+                    loggedIn: payload.loggedIn,
+                    errorMsg: payload.errorMessage
                 })
             }
             case AuthActionType.LOGOUT_USER: {
@@ -55,7 +66,8 @@ function AuthContextProvider(props) {
                 return setAuth({
                     user: payload.user,
                     loggedIn: false,
-                    errorMsg: null
+                    errorMsg: null,
+                    guest: false
                 })
             }
             case AuthActionType.REGISTER_ERROR: {
@@ -88,6 +100,18 @@ function AuthContextProvider(props) {
                 }
             });
         }
+    }
+    
+    auth.loginGuest = function () {
+        authReducer({
+            type: AuthActionType.LOGIN_GUEST,
+            payload: {
+                guest: true,
+                loggedIn: false,
+                errorMessage: null
+            }
+        });
+        history.push('/allLists/')
     }
 
     auth.registerUser = async function(username, firstName, lastName, email, password, passwordVerify) {

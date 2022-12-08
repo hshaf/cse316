@@ -25,6 +25,7 @@ import AllListsSearchToolbar from './AllListsSearchToolbar';
 import AllListsStatusbar from './AllListsStatusbar';
 import UsersSearchToolbar from './UsersSearchToolbar'
 import UsersStatusbar from './UsersStatusbar'
+import AuthContext from '../auth'
 /*
     This React component lists all the top5 lists in the UI.
     
@@ -33,6 +34,7 @@ import UsersStatusbar from './UsersStatusbar'
 const UsersScreen = () => {
     const { store } = useContext(GlobalStoreContext);
     const [text, setText] = useState("");
+    const { auth } = useContext(AuthContext);
 
     let addListClass = "playlister-button";
 
@@ -101,6 +103,7 @@ const UsersScreen = () => {
                     <TextField
                     label="Add Comment"
                     variant="filled"
+                    disabled={auth.guest}
                     style={{marginTop:'15px',borderRadius:'10px', backgroundColor:'white'}}
                     fullWidth
                     onKeyPress={handleKeyPress}

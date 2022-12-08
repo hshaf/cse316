@@ -9,7 +9,7 @@ export default function UsersWrapper() {
     const { auth } = useContext(AuthContext);
     console.log("AllListsWrapper auth.loggedIn: " + auth.loggedIn);
     
-    if (auth.loggedIn)
+    if (auth.loggedIn || auth.guest)
         return (
             <UsersScreen />
         );

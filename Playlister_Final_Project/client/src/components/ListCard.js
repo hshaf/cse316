@@ -15,6 +15,7 @@ import { WorkspaceScreen } from '.';
 import { EditToolbar } from '.';
 import { PublishToolbar } from '.';
 import { PublishWorkspaceScreen } from '.';
+import AuthContext from '../auth';
 
 /*
     This is a card in our list of top 5 lists. It lets select
@@ -27,6 +28,7 @@ function ListCard(props) {
     const { store } = useContext(GlobalStoreContext);
     const [editActive, setEditActive] = useState(false);
     const [text, setText] = useState("");
+    const { auth } = useContext(AuthContext);
     // const { idNamePair, selected } = props;
     const { playlist, selected } = props;
 
@@ -206,9 +208,9 @@ function ListCard(props) {
                         <Typography><span style={{fontWeight:'bold'}}>By:</span> {playlist.ownerUsername}</Typography>
                     </Box>
                     <Box display="flex" justifyContent='center' alignItems='center' style={{marginRight:'50px'}}>
-                        <IconButton onClick={(event)=>{handleLike(event)}}><ThumbUpAltOutlinedIcon style={{fontSize:'35px'}}></ThumbUpAltOutlinedIcon></IconButton>
+                        <IconButton disabled={auth.guest} onClick={(event)=>{handleLike(event)}}><ThumbUpAltOutlinedIcon style={{fontSize:'35px'}}></ThumbUpAltOutlinedIcon></IconButton>
                         <Typography style={{paddingRight:'15px'}}>{playlist.likes.length}</Typography>
-                        <IconButton onClick={(event)=>{handleDislike(event)}}><ThumbDownAltOutlinedIcon style={{fontSize:'35px'}}></ThumbDownAltOutlinedIcon></IconButton>
+                        <IconButton disabled={auth.guest} onClick={(event)=>{handleDislike(event)}}><ThumbDownAltOutlinedIcon style={{fontSize:'35px'}}></ThumbDownAltOutlinedIcon></IconButton>
                         <Typography style={{paddingRight:'15px'}}>{playlist.dislikes.length}</Typography>
                     </Box>
                 </Box>
@@ -270,9 +272,9 @@ function ListCard(props) {
                         <Typography><span style={{fontWeight:'bold'}}>By:</span> {playlist.ownerUsername}</Typography>
                     </Box>
                     <Box display="flex" justifyContent='center' alignItems='center' style={{marginRight:'50px'}}>
-                        <IconButton onClick={(event)=>{handleLike(event)}}><ThumbUpAltOutlinedIcon style={{fontSize:'35px'}}></ThumbUpAltOutlinedIcon></IconButton>
+                        <IconButton disabled={auth.guest} onClick={(event)=>{handleLike(event)}}><ThumbUpAltOutlinedIcon style={{fontSize:'35px'}}></ThumbUpAltOutlinedIcon></IconButton>
                         <Typography style={{paddingRight:'15px'}}>{playlist.likes.length}</Typography>
-                        <IconButton onClick={(event)=>{handleDislike(event)}}><ThumbDownAltOutlinedIcon style={{fontSize:'35px'}}></ThumbDownAltOutlinedIcon></IconButton>
+                        <IconButton disabled={auth.guest} onClick={(event)=>{handleDislike(event)}}><ThumbDownAltOutlinedIcon style={{fontSize:'35px'}}></ThumbDownAltOutlinedIcon></IconButton>
                         <Typography style={{paddingRight:'15px'}}>{playlist.dislikes.length}</Typography>
                     </Box>
                 </Box>

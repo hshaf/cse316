@@ -7,6 +7,8 @@ import UndoIcon from '@mui/icons-material/Undo';
 import CloseIcon from '@mui/icons-material/HighlightOff';
 import Box from '@mui/material/Box';
 
+import AuthContext from '../auth'
+
 /*
     This toolbar is a functional React component that
     manages the undo/redo/close buttons.
@@ -15,6 +17,7 @@ import Box from '@mui/material/Box';
 */
 function EditToolbar() {
     const { store } = useContext(GlobalStoreContext);
+    const { auth } = useContext(AuthContext);
 
     let addSongClass = "playlister-button";
     let undoClass = "playlister-button";
@@ -111,7 +114,7 @@ function EditToolbar() {
                         Delete
                 </Button>
                 <Button 
-                    disabled={isModalOpen || !store.currentList}
+                    disabled={auth.guest || isModalOpen || !store.currentList}
                     id='duplicate-list-button'
                     onClick={handleDuplicate}
                     className={duplicateClass}

@@ -1,10 +1,14 @@
 import { Button, Box } from '@mui/material';
 import playlisterlogo from './playlister-logo.png';
 
+import { useContext } from 'react';
+import AuthContext from '../auth'
+
 import { useHistory } from 'react-router-dom';
 
 export default function SplashScreen() {
     const history = useHistory();
+    const { auth } = useContext(AuthContext);
 
 
     function handleRegister() {
@@ -16,7 +20,7 @@ export default function SplashScreen() {
     }
 
     function handleGuest() {
-        // TO-DO
+        auth.loginGuest();
     }
 
     return (
