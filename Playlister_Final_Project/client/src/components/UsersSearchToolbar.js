@@ -23,7 +23,7 @@ import SortIcon from '@mui/icons-material/Sort';
 
 import { useHistory } from 'react-router-dom';
 
-export default function AllListsSearchToolbar() {
+export default function UsersSearchToolbar() {
     const { auth } = useContext(AuthContext);
     const { store } = useContext(GlobalStoreContext);
     const [anchorEl, setAnchorEl] = useState(null);
@@ -54,23 +54,23 @@ export default function AllListsSearchToolbar() {
     };
 
     const handleSortByName = () => {
-        store.setAllListsSortType(allListsSortTypes.BY_NAME);
+        store.setUsersSortType(allListsSortTypes.BY_NAME);
         handleMenuClose();
     };
     const handleSortByPublish = () => {
-        store.setAllListsSortType(allListsSortTypes.BY_PUBLISH_DATE);
+        store.setUsersSortType(allListsSortTypes.BY_PUBLISH_DATE);
         handleMenuClose();
     };
     const handleSortByListens = () => {
-        store.setAllListsSortType(allListsSortTypes.BY_LISTENS);
+        store.setUsersSortType(allListsSortTypes.BY_LISTENS);
         handleMenuClose();
     };
     const handleSortByLikes = () => {
-        store.setAllListsSortType(allListsSortTypes.BY_LIKES);
+        store.setUsersSortType(allListsSortTypes.BY_LIKES);
         handleMenuClose();
     };
     const handleSortByDisikes = () => {
-        store.setAllListsSortType(allListsSortTypes.BY_DISLIKES);
+        store.setUsersSortType(allListsSortTypes.BY_DISLIKES);
         handleMenuClose();
     };
 
@@ -80,11 +80,11 @@ export default function AllListsSearchToolbar() {
     };
 
     const handleAllLists = () => {
+        store.resetStore();
         history.push("/allLists/");
     };
 
     const handleUsers = () => {
-        store.resetStore();
         history.push("/users/");
     };
 
@@ -94,7 +94,7 @@ export default function AllListsSearchToolbar() {
             // event.target.value = "";
             // setText(event.target.value);
             // console.log(text);
-            store.setAllListsSearchFilter(text);
+            store.setUsersSearchFilter(text);
         }
     }
     function handleUpdateText(event) {

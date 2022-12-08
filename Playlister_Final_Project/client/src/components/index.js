@@ -22,6 +22,7 @@ import CommentWorkspaceScreen from './CommentWorkspaceScreen'
 import CommentCard from './CommentCard'
 import AllListsWrapper from './AllListsWrapper'
 import AllListsScreen from './AllListsScreen'
+import UsersWrapper from './UsersWrapper'
 /*
     This serves as a module so that we can import
     all the other components as we wish.
@@ -48,6 +49,7 @@ export {
     CommentCard,
     AllListsWrapper,
     AllListsScreen,
+    UsersWrapper,
     PublishSongCard,
     WorkspaceScreen,
     SearchToolbar,

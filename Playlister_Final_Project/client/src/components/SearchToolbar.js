@@ -69,7 +69,8 @@ export default function SearchToolbar() {
     };
 
     const handleUsers = () => {
-        
+        store.resetStore();
+        history.push("/users/");
     };
 
     function handleKeyPress(event) {

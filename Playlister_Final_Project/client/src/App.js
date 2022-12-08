@@ -9,7 +9,8 @@ import {
     LoginScreen,
     RegisterScreen,
     WorkspaceScreen,
-    AllListsWrapper
+    AllListsWrapper,
+    UsersWrapper
 } from './components'
 /*
     This is our application's top-level component.
@@ -31,6 +32,7 @@ const App = () => {
                     <Switch>
                         <Route path="/" exact component={HomeWrapper} />
                         <Route path="/allLists/" exact component={AllListsWrapper} />
+                        <Route path="/users/" exact component={UsersWrapper} />
                         <Route path="/login/" exact component={LoginScreen} />
                         <Route path="/register/" exact component={RegisterScreen} />
                         <Route path="/playlist/:id" exact component={WorkspaceScreen} />
