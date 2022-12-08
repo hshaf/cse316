@@ -8,7 +8,7 @@ import SkipNextIcon from '@mui/icons-material/SkipNext';
 import StopIcon from '@mui/icons-material/Stop';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 
-import { useContext } from 'react'
+import { useContext, useState } from 'react'
 import { GlobalStoreContext } from '../store'
 
 export default function PlaylisterYouTubePlayer(props) {
@@ -39,7 +39,8 @@ export default function PlaylisterYouTubePlayer(props) {
         },
     };
 
-    let ytplayer = null;
+    // let ytplayer = null;
+    let [ytplayer, setYtplayer] = useState(null)
 
     // THIS FUNCTION LOADS THE CURRENT SONG INTO
     // THE PLAYER AND PLAYS IT
@@ -91,7 +92,7 @@ export default function PlaylisterYouTubePlayer(props) {
     }
 
     function onPlayerReady(event) {
-        ytplayer = event.target;
+        setYtplayer(event.target);
         loadAndPlayCurrentSong(event.target);
         event.target.playVideo();
     }

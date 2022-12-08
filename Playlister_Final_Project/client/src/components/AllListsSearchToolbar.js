@@ -1,7 +1,7 @@
 import { useContext, useState } from 'react';
 import { Link } from 'react-router-dom'
 import AuthContext from '../auth';
-import { GlobalStoreContext, sortTypes } from '../store'
+import { GlobalStoreContext, allListsSortTypes, sortTypes } from '../store'
 import { useLocation } from 'react-router-dom';
 import playlisterlogo from './playlister-logo.png';
 
@@ -23,7 +23,7 @@ import SortIcon from '@mui/icons-material/Sort';
 
 import { useHistory } from 'react-router-dom';
 
-export default function SearchToolbar() {
+export default function AllListsSearchToolbar() {
     const { auth } = useContext(AuthContext);
     const { store } = useContext(GlobalStoreContext);
     const [anchorEl, setAnchorEl] = useState(null);
@@ -54,17 +54,32 @@ export default function SearchToolbar() {
     };
 
     const handleSortByName = () => {
-        store.setSortType(sortTypes.BY_NAME);
+        store.setAllListsSortType(allListsSortTypes.BY_NAME);
+        handleMenuClose();
+    };
+    const handleSortByPublish = () => {
+        store.setAllListsSortType(allListsSortTypes.BY_PUBLISH_DATE);
+        handleMenuClose();
+    };
+    const handleSortByListens = () => {
+        store.setAllListsSortType(allListsSortTypes.BY_LISTENS);
+        handleMenuClose();
+    };
+    const handleSortByLikes = () => {
+        store.setAllListsSortType(allListsSortTypes.BY_LIKES);
+        handleMenuClose();
+    };
+    const handleSortByDisikes = () => {
+        store.setAllListsSortType(allListsSortTypes.BY_DISLIKES);
         handleMenuClose();
     };
 
     const handleHome = () => {
-        // store.resetStore();
+        store.resetStore();
         history.push("/");
     };
 
     const handleAllLists = () => {
-        store.resetStore();
         history.push("/allLists/");
     };
 
@@ -78,7 +93,7 @@ export default function SearchToolbar() {
             // event.target.value = "";
             // setText(event.target.value);
             // console.log(text);
-            store.setSearchFilter(text);
+            store.setAllListsSearchFilter(text);
         }
     }
     function handleUpdateText(event) {
@@ -103,9 +118,11 @@ export default function SearchToolbar() {
             open={isMenuOpen}
             onClose={handleMenuClose}
         >
-            <MenuItem onClick={handleSortCreationDate}>Creation Date (Old-New)</MenuItem>
-            <MenuItem onClick={handleSortLastEdit}>Last Edit Date (New-Old)</MenuItem>
-            <MenuItem onClick={handleSortByName}>By Name (A-Z)</MenuItem>
+            <MenuItem onClick={handleSortByName}>Name (A-Z)</MenuItem>
+            <MenuItem onClick={handleSortByPublish}>Publish Date (Newest)</MenuItem>
+            <MenuItem onClick={handleSortByListens}>Listens (High-Low)</MenuItem>
+            <MenuItem onClick={handleSortByLikes}>Likes (High-Low)</MenuItem>
+            <MenuItem onClick={handleSortByDisikes}>Dislikes (High-Low)</MenuItem>
         </Menu>        
 
     let menu = sortListMenu;

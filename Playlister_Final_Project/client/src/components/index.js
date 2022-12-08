@@ -20,6 +20,8 @@ import PublishWorkspaceScreen from './PublishWorkspaceScreen'
 import PublishSongCard from './PublishSongCard'
 import CommentWorkspaceScreen from './CommentWorkspaceScreen'
 import CommentCard from './CommentCard'
+import AllListsWrapper from './AllListsWrapper'
+import AllListsScreen from './AllListsScreen'
 /*
     This serves as a module so that we can import
     all the other components as we wish.
@@ -44,6 +46,8 @@ export {
     PublishToolbar,
     CommentWorkspaceScreen,
     CommentCard,
+    AllListsWrapper,
+    AllListsScreen,
     PublishSongCard,
     WorkspaceScreen,
     SearchToolbar,
