@@ -11,7 +11,7 @@ const style = {
     transform: 'translate(-50%, -50%)',
     width: 400,
     height: 100,
-    bgcolor: 'background.paper',
+    bgcolor: '#C4BEEE',
     border: '2px solid #000',
     boxShadow: 24,
     p: 4,
@@ -48,11 +48,11 @@ export default function MUIRemoveSongModal() {
         data-animation="slideInOutLeft">
         <div className="modal-root" id='verify-remove-song-root'>
             <div className="modal-north">
-                Remove song?
+                <span style={{fontWeight:'bold', fontSize:'20px',fontFamily:'sans-serif'}}>Remove song?</span>
             </div>
-            <div className="modal-center">
+            <div className="modal-center" style={{marginTop:'8px'}}>
                 <div className="modal-center-content">
-                    Are you sure you wish to permanently remove <span id="delete-song-span">{songTitle}</span> from the playlist?
+                    <span style={{fontSize:'18px', fontFamily:'sans-serif'}}>Are you sure you wish to permanently remove <span id="delete-song-span">{songTitle}</span> from the playlist?</span>
                 </div>
             </div>
             <div className="modal-south">

@@ -10,9 +10,9 @@ const style = {
     left: '50%',
     transform: 'translate(-50%, -50%)',
     width: 400,
-    bgcolor: 'background.paper',
-    border: '2px solid #000',
-    boxShadow: 24,
+    // bgcolor: 'background.paper',
+    // border: '2px solid #000',
+    // boxShadow: 24,
     p: 4,
 };
 
@@ -34,7 +34,7 @@ export default function MUIDeleteModal() {
             open={store.listMarkedForDeletion !== null}
         >
             <Box sx={style}>
-                <div className="modal-dialog">
+                <div className="modal-dialog" style={{fontFamily:'sans-serif',backgroundColor:'#C4BEEE'}}>
                 <header className="dialog-header">
                     Are you sure you wish to permanently delete the <span id="delete-list-span">{name}</span> playlist?
                 </header>

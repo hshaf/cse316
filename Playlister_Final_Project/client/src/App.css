@@ -444,9 +444,9 @@ input {
   background: var(--swatch-complement);
   overflow: auto;
   cursor: default;
-  border-width: 5px;
+  border: 3px solid black;
   border-radius: 10px;
-  border-style: groove;
+  /* border-style: groove; */
 }
 
 .modal-dialog > * {

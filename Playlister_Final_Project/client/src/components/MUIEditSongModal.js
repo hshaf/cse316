@@ -11,7 +11,7 @@ const style = {
     transform: 'translate(-50%, -50%)',
     width: 400,
     height: 250,
-    bgcolor: 'background.paper',
+    bgcolor: '#C4BEEE',
     border: '2px solid #000',
     boxShadow: 24,
     p: 4,
@@ -62,25 +62,27 @@ export default function MUIEditSongModal() {
                 className="modal-root">
                 <div
                     id="edit-song-modal-header"
-                    className="modal-north">Edit Song</div>
+                    className="modal-north"
+                    style={{marginBottom:'10px'}}><span style={{fontWeight:'bold',fontFamily:'sans-serif',fontSize:'20px'}}>Edit Song</span></div>
                 <div
                     id="edit-song-modal-content"
-                    className="modal-center">
-                    <div id="title-prompt" className="modal-prompt">Title:</div>
+                    className="modal-center"
+                    style={{marginBottom: '20px'}}>
+                    <div id="title-prompt" className="modal-prompt"><span style={{fontFamily:'sans-serif',fontSize:'18px'}}>Title:</span></div>
                     <input 
                         id="edit-song-modal-title-textfield" 
                         className='modal-textfield' 
                         type="text" 
                         defaultValue={title} 
                         onChange={handleUpdateTitle} />
-                    <div id="artist-prompt" className="modal-prompt">Artist:</div>
+                    <div id="artist-prompt" className="modal-prompt"><span style={{fontFamily:'sans-serif',fontSize:'18px'}}>Artist:</span></div>
                     <input 
                         id="edit-song-modal-artist-textfield" 
                         className='modal-textfield' 
                         type="text" 
                         defaultValue={artist} 
                         onChange={handleUpdateArtist} />
-                    <div id="you-tube-id-prompt" className="modal-prompt">YouTube Id:</div>
+                    <div id="you-tube-id-prompt" className="modal-prompt"><span style={{fontFamily:'sans-serif',fontSize:'18px'}}>YouTube Id:</span></div>
                     <input 
                         id="edit-song-modal-youTubeId-textfield" 
                         className='modal-textfield' 
